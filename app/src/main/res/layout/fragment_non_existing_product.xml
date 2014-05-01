@@ -1,0 +1,52 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.alfd.app.activities.fragments.NonExistingProductFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Product"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal"
+            android:autoText="true"
+            style="@style/hero_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/tvw_bar_code"
+            android:layout_gravity="center_horizontal"
+            style="@style/hero_text_highlighted" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="was not yet added. Do you want insert it now?"
+            android:id="@+id/textView2"
+            android:layout_gravity="center|right"
+            android:layout_margin="15dip"
+            android:gravity="center"
+            style="@style/hero_text" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Insert"
+            android:id="@+id/btn_insert"
+            android:layout_gravity="center_horizontal"
+            style="@style/button_primary" />
+    </LinearLayout>
+</FrameLayout>

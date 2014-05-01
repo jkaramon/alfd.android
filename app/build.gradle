@@ -1,0 +1,46 @@
+
+task copyDBToSD(type: Exec, group: 'Database') {
+    commandLine 'cmd', '/c', 'adb', 'shell', 'su', '-c', '"cp /data/data/com.alfd.app/databases/com.alfd.db /mnt/sdcard"'
+}
+
+task delDB(type: Exec, group: 'Database') {
+    commandLine 'cmd', '/c', 'adb', 'shell', 'su', '-c', '"rm /data/data/com.alfd.app/databases/com.alfd.db"'
+}
+
+task downloadDB(type: Exec, group: 'Database', dependsOn: 'copyDBToSD') {
+    commandLine 'cmd', '/c', 'adb', 'pull', '/mnt/sdcard/com.alfd.db', 'c:\\Users\\karamon\\Projects\\ALFD.android\\.tmp'
+}
+task openDB(type: Exec, group: 'Database', dependsOn: 'downloadDB') {
+    commandLine '"C:\\Program Files (x86)\\sqlitebrowser\\SQLite Database Browser 2.0 b1.exe"', 'c:\\Users\\karamon\\Projects\\ALFD.android\\.tmp\\com.alfd.db'
+}
+
+
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 19
+    buildToolsVersion "19.0.3"
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 19
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:19.0.1'
+    compile 'com.android.support:appcompat-v7:19.0.1'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile files('src/main/libs/zbar.jar')
+    compile files('src/main/libs/ormlite-core-4.48.jar')
+    compile files('src/main/libs/ormlite-android-4.48.jar')
+    compile files('src/main/libs/activeandroid.jar')
+}
