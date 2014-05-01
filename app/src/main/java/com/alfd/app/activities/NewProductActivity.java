@@ -30,14 +30,16 @@ public class NewProductActivity extends BaseActionBarActivity implements OnPhoto
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        fillProduct(savedInstanceState);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_product);
 
-        fillProduct();
+
         List<Fragment> fragments = getFragments();
         pageAdapter = new NewProductPageAdapter(getSupportFragmentManager(), fragments);
         ViewPager pager = (ViewPager)findViewById(R.id.new_product_view_pager);
         pager.setAdapter(pageAdapter);
+
 
     }
 
@@ -49,24 +51,33 @@ public class NewProductActivity extends BaseActionBarActivity implements OnPhoto
     }
 
     private Fragment getProductPhotoFragment(String imageType) {
-        File[] imageFiles = FileHelpers.getProductImageTempFiles(this, imageType, product.BarCode);
+        File[] imageFiles = getImageFiles(imageType);
         if (imageFiles.length > 0) {
             return ProductGalleryPhotoFragment.newInstance(imageType);
         }
         return ProductPlaceholderPhotoFragment.newInstance(imageType);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString(SC.BAR_CODE, product.BarCode);
+        savedInstanceState.putString(SC.BAR_TYPE, product.BarType);
 
+    }
 
-    private void fillProduct() {
-        String title = this.getTitle().toString();
+    private void fillProduct(Bundle savedInstanceState) {
 
-        Intent i = getIntent();
         product = new Product();
-        product.BarCode = i.getStringExtra(SC.BAR_CODE);
-        product.BarType = i.getStringExtra(SC.BAR_TYPE);
-
-        setTitle(title + product.getFullBarCodeInfo());
+        if (savedInstanceState == null) {
+            Intent i = getIntent();
+            product.BarCode = i.getStringExtra(SC.BAR_CODE);
+            product.BarType = i.getStringExtra(SC.BAR_TYPE);
+        }
+        else {
+            product.BarCode = savedInstanceState.getString(SC.BAR_CODE);
+            product.BarType = savedInstanceState.getString(SC.BAR_TYPE);
+        }
     }
 
 
@@ -96,6 +107,11 @@ public class NewProductActivity extends BaseActionBarActivity implements OnPhoto
     @Override
     public void onPhotoSelected(Bitmap imageBitmap, String imageType) {
         savePhoto(imageBitmap, imageType);
+    }
+
+    @Override
+    public File[] getImageFiles(String imageType) {
+        return FileHelpers.getProductImageTempFiles(this, imageType, product.BarCode);
     }
 
     private void savePhoto(Bitmap imageBitmap, String imageType) {

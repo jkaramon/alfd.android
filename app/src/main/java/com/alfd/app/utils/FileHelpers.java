@@ -73,6 +73,6 @@ public class FileHelpers {
     }
 
     private static String getTempImageName(String imageType, String barCode) {
-        return String.format("temp_%s_%s%", imageType, barCode);
+        return String.format("temp_%s_%s", imageType, barCode);
     }
 }

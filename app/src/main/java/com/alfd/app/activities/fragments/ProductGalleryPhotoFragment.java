@@ -1,6 +1,7 @@
 package com.alfd.app.activities.fragments;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Build;
@@ -21,11 +22,14 @@ import android.widget.Toast;
 
 import com.alfd.app.BuildConfig;
 import com.alfd.app.R;
+import com.alfd.app.SC;
 import com.alfd.app.activities.ImageDetailActivity;
 import com.alfd.app.adapters.ImageAdapter;
 import com.alfd.app.utils.ImageCache;
 import com.alfd.app.utils.ImageResizer;
 import com.alfd.app.utils.Utils;
+
+import java.io.File;
 
 public class ProductGalleryPhotoFragment extends Fragment implements AdapterView.OnItemClickListener   {
 
@@ -33,25 +37,37 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
     private static final String TAG = "ImageGridFragment";
     private static final String IMAGE_CACHE_DIR = "thumbs";
 
+    private String imageType;
+
     private int imageThumbSize;
     private int imageThumbSpacing;
     private ImageAdapter adapter;
     private ImageResizer imageWorker;
+
+    private OnPhotoInteractionListener listener;
 
     /**
      * Empty constructor as per the Fragment documentation
      */
     public ProductGalleryPhotoFragment() {}
 
+    // TODO: Rename and change types and number of parameters
+    public static ProductGalleryPhotoFragment newInstance(String imgPlaceholderType) {
+        ProductGalleryPhotoFragment fragment = new ProductGalleryPhotoFragment();
+        Bundle args = new Bundle();
+        args.putString(SC.IMAGE_TYPE, imgPlaceholderType);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        imageType = getArguments().getString(SC.IMAGE_TYPE);
 
         imageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         imageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
-
-        adapter = new ImageAdapter(getActivity());
 
         ImageCache.ImageCacheParams cacheParams =
                 new ImageCache.ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
@@ -62,6 +78,12 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
         imageWorker = new ImageResizer(getActivity(), imageThumbSize);
         imageWorker.setLoadingImage(R.drawable.empty_photo);
         imageWorker.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
+
+        adapter = new ImageAdapter(getActivity(), imageWorker,listener.getImageFiles(imageType));
+
+
+
+
     }
 
     @Override
@@ -148,11 +170,28 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
         imageWorker.closeCache();
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            listener = (OnPhotoInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnPhotoInteractionListener");
+        }
+    }
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+    }
+
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
         final Intent i = new Intent(getActivity(), ImageDetailActivity.class);
-        i.putExtra(ImageDetailActivity.EXTRA_IMAGE, (int) id);
+        File f = (File)adapter.getItem(position);
+        i.putExtra(SC.IMAGE_FULL_NAME, f.getAbsolutePath());
         if (Utils.hasJellyBean()) {
             // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
             // show plus the thumbnail image in GridView is cropped. so using

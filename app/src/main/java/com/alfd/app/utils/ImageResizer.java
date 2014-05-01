@@ -27,6 +27,7 @@ import android.util.Log;
 
 import com.alfd.app.BuildConfig;
 
+import java.io.File;
 import java.io.FileDescriptor;
 
 /**
@@ -86,20 +87,20 @@ public class ImageResizer extends ImageWorker {
      * The main processing method. This happens in a background task. In this case we are just
      * sampling down the bitmap and returning it from a resource.
      *
-     * @param resId
+     * @param file
      * @return
      */
-    private Bitmap processBitmap(int resId) {
+    private Bitmap processBitmap(File file) {
         if (BuildConfig.DEBUG) {
-            Log.d(TAG, "processBitmap - " + resId);
+            Log.d(TAG, "processBitmap - " + file.getAbsolutePath());
         }
-        return decodeSampledBitmapFromResource(mResources, resId, mImageWidth,
+        return decodeSampledBitmapFromFile(file.getAbsolutePath(), mImageWidth,
                 mImageHeight, getImageCache());
     }
 
     @Override
     protected Bitmap processBitmap(Object data) {
-        return processBitmap(Integer.parseInt(String.valueOf(data)));
+        return processBitmap((File)data);
     }
 
     /**

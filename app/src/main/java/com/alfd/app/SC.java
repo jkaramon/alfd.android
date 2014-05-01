@@ -11,5 +11,6 @@ public class SC {
     public static final String CURRENT_FRAGMENT = "current_fragment";
 
     public static final String PRODUCT_PHOTO_ID = "product_photo_id";
+    public static final String IMAGE_FULL_NAME = "image_full_name";
 }
 

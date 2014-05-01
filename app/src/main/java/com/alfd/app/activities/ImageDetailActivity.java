@@ -18,6 +18,8 @@ package com.alfd.app.activities;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
+import android.app.Activity;
+import android.graphics.Bitmap;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -32,25 +34,52 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager.LayoutParams;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.alfd.app.BuildConfig;
 import com.alfd.app.R;
+import com.alfd.app.SC;
+import com.alfd.app.utils.FileHelpers;
 import com.alfd.app.utils.ImageCache;
+import com.alfd.app.utils.ImageLoader;
 import com.alfd.app.utils.ImageResizer;
+import com.alfd.app.utils.ImageWorker;
 import com.alfd.app.utils.Utils;
 
-public class ImageDetailActivity extends FragmentActivity  {
+import java.io.File;
+
+public class ImageDetailActivity extends Activity {
     private static final String IMAGE_CACHE_DIR = "images";
     public static final String EXTRA_IMAGE = "extra_image";
 
-    private ImageResizer imageWorker;
-
+    private ImageLoader imageWorker;
+    File imageFile;
     @TargetApi(VERSION_CODES.HONEYCOMB)
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.image_detail);
+        super.onCreate(savedInstanceState);
+        fillImageFile(savedInstanceState);
+        imageWorker = new ImageLoader(this);
+        ImageView imageView = (ImageView)findViewById(R.id.imageView);
+        imageWorker.loadImage(imageFile, imageView);
+    }
+    private void fillImageFile(Bundle savedInstanceState) {
+        String filename;
+        if (savedInstanceState == null) {
+            filename = getIntent().getStringExtra(SC.IMAGE_FULL_NAME);
+        }
+        else {
+            filename = savedInstanceState.getString(SC.IMAGE_FULL_NAME);
+        }
+        imageFile = new File(filename);
+    }
 
-
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString(SC.IMAGE_FULL_NAME, imageFile.getAbsolutePath());
     }
 
     @Override

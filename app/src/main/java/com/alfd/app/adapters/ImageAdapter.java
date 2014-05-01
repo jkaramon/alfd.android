@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import com.alfd.app.utils.ImageResizer;
 import com.alfd.app.views.RecyclingImageView;
 
+import java.io.File;
+
 /**
  * The main adapter that backs the GridView. This is fairly standard except the number of
  * columns in the GridView is used to create a fake top row of empty views as we use a
@@ -19,23 +21,25 @@ import com.alfd.app.views.RecyclingImageView;
  */
 public class ImageAdapter extends BaseAdapter {
 
-    private final Context mContext;
-    private int mItemHeight = 0;
-    private int mNumColumns = 0;
-    private int mActionBarHeight = 0;
+    private final Context context;
+    private int itemHeight = 0;
+    private int numColumns = 0;
+    private int actionBarHeight = 0;
     private ImageResizer imageWorker;
-    private GridView.LayoutParams mImageViewLayoutParams;
-
-    public ImageAdapter(Context context) {
+    private GridView.LayoutParams imageViewLayoutParams;
+    private File[] imageFiles;
+    public ImageAdapter(Context context, ImageResizer imageWorker, File[] imageFiles) {
         super();
-        mContext = context;
-        mImageViewLayoutParams = new GridView.LayoutParams(
+        this.imageWorker = imageWorker;
+        this.context = context;
+        this.imageFiles = imageFiles;
+        imageViewLayoutParams = new GridView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         // Calculate ActionBar height
         TypedValue tv = new TypedValue();
         if (context.getTheme().resolveAttribute(
                 android.R.attr.actionBarSize, tv, true)) {
-            mActionBarHeight = TypedValue.complexToDimensionPixelSize(
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(
                     tv.data, context.getResources().getDisplayMetrics());
         }
     }
@@ -46,31 +50,27 @@ public class ImageAdapter extends BaseAdapter {
         if (getNumColumns() == 0) {
             return 0;
         }
-
-        // Size + number of columns for top empty row
-        return 5 + mNumColumns;
+        return imageFiles.length;
     }
 
     @Override
     public Object getItem(int position) {
-        return position < mNumColumns ?
-                null : null;
+        return imageFiles[position];
     }
 
     @Override
     public long getItemId(int position) {
-        return position < mNumColumns ? 0 : position - mNumColumns;
+        return position;
     }
 
     @Override
     public int getViewTypeCount() {
-        // Two types of views, the normal ImageView and the top row of empty views
-        return 2;
+        return 1;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return (position < mNumColumns) ? 1 : 0;
+        return 0;
     }
 
     @Override
@@ -80,36 +80,23 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup container) {
-        //BEGIN_INCLUDE(load_gridview_item)
-        // First check if this is the top row
-        if (position < mNumColumns) {
-            if (convertView == null) {
-                convertView = new View(mContext);
-            }
-            // Set empty view with height of ActionBar
-            convertView.setLayoutParams(new AbsListView.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, mActionBarHeight));
-            return convertView;
-        }
-
         // Now handle the main ImageView thumbnails
         ImageView imageView;
         if (convertView == null) { // if it's not recycled, instantiate and initialize
-            imageView = new RecyclingImageView(mContext);
+            imageView = new RecyclingImageView(context);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setLayoutParams(mImageViewLayoutParams);
+            imageView.setLayoutParams(imageViewLayoutParams);
         } else { // Otherwise re-use the converted view
             imageView = (ImageView) convertView;
         }
-
         // Check the height matches our calculated column width
-        if (imageView.getLayoutParams().height != mItemHeight) {
-            imageView.setLayoutParams(mImageViewLayoutParams);
+        if (imageView.getLayoutParams().height != itemHeight) {
+            imageView.setLayoutParams(imageViewLayoutParams);
         }
 
         // Finally load the image asynchronously into the ImageView, this also takes care of
         // setting a placeholder image while the background thread runs
-        imageWorker.loadImage(null, imageView);
+        imageWorker.loadImage(getItem(position), imageView);
         return imageView;
         //END_INCLUDE(load_gridview_item)
     }
@@ -121,21 +108,21 @@ public class ImageAdapter extends BaseAdapter {
      * @param height
      */
     public void setItemHeight(int height) {
-        if (height == mItemHeight) {
+        if (height == itemHeight) {
             return;
         }
-        mItemHeight = height;
-        mImageViewLayoutParams =
-                new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemHeight);
+        itemHeight = height;
+        imageViewLayoutParams =
+                new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, itemHeight);
         imageWorker.setImageSize(height);
         notifyDataSetChanged();
     }
 
     public void setNumColumns(int numColumns) {
-        mNumColumns = numColumns;
+        this.numColumns = numColumns;
     }
 
     public int getNumColumns() {
-        return mNumColumns;
+        return numColumns;
     }
 }

@@ -16,5 +16,6 @@
     <string name="hint_new_product_name">Enter product name here</string>
     <string name="scanning_bar_code">Scanning bar code ...</string>
     <string name="scan">Scan</string>
+    <string name="title_activity_image_detail">%s: img</string>
 
 </resources>

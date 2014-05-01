@@ -2,6 +2,8 @@ package com.alfd.app.activities.fragments;
 
 import android.graphics.Bitmap;
 
+import java.io.File;
+
 /**
  * This interface must be implemented by activities that contain this
  * fragment to allow an interaction in this fragment to be communicated
@@ -15,5 +17,5 @@ import android.graphics.Bitmap;
 public interface OnPhotoInteractionListener {
     // TODO: Update argument type and name
     public void onPhotoSelected(Bitmap imageBitmap, String imageType);
-
+    File[] getImageFiles(String imageType);
 }
