@@ -41,9 +41,8 @@
             android:label="@string/title_activity_new_product" >
         </activity>
         <activity
-            android:name=".activities.ImageDetailActivity"
+            android:name=".activities.ProductFullScreenActivity"
             android:label="@string/title_activity_image_detail"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         >
         </activity>
     </application>

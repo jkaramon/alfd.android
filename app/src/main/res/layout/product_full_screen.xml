@@ -5,9 +5,11 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/default_button">
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/imageView"></ImageView>
+
+    <view
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        class="android.support.v4.view.ViewPager"
+        android:id="@+id/view_pager"
+        android:focusableInTouchMode="false" />
 </RelativeLayout>

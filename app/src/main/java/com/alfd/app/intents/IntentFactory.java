@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.provider.MediaStore;
+import android.support.v4.app.Fragment;
 
 import com.alfd.app.RequestCodes;
 import com.alfd.app.SC;
@@ -19,8 +20,21 @@ public class IntentFactory {
         return i;
     }
 
-    public static Intent createTakePictureIntent(Activity activity) {
-        return new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+    public static Intent takePicture(Activity activity) {
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (i.resolveActivity(activity.getPackageManager()) != null) {
+            activity.startActivityForResult(i, RequestCodes.IMAGE_CAPTURE);
+        }
+        return i;
+
+    }
+    public static Intent takePicture(Fragment f) {
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Activity activity = f.getActivity();
+        if (i.resolveActivity(activity.getPackageManager()) != null) {
+            f.startActivityForResult(i, RequestCodes.IMAGE_CAPTURE);
+        }
+        return i;
 
     }
 

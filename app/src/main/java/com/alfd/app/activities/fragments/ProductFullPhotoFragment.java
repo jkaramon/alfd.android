@@ -10,40 +10,45 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.alfd.app.ProductImageTypes;
 import com.alfd.app.R;
 import com.alfd.app.RequestCodes;
 import com.alfd.app.SC;
 import com.alfd.app.intents.IntentFactory;
 import com.alfd.app.interfaces.OnPhotoInteractionListener;
+import com.alfd.app.utils.ImageLoader;
+
+import java.io.File;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
  * {@link com.alfd.app.interfaces.OnPhotoInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ProductPlaceholderPhotoFragment#newInstance} factory method to
+ * Use the {@link com.alfd.app.activities.fragments.ProductFullPhotoFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  */
-public class ProductPlaceholderPhotoFragment extends Fragment implements View.OnClickListener  {
+public class ProductFullPhotoFragment extends Fragment implements View.OnClickListener  {
 
 
-    private ImageView photo;
+    private ImageView imageView;
     private String imageType;
+    private File imageFile;
+    private ImageLoader imageWorker;
 
-
-    private OnPhotoInteractionListener mListener;
+    private OnPhotoInteractionListener listener;
 
     // TODO: Rename and change types and number of parameters
-    public static ProductPlaceholderPhotoFragment newInstance(String imgPlaceholderType) {
-        ProductPlaceholderPhotoFragment fragment = new ProductPlaceholderPhotoFragment();
+    public static ProductFullPhotoFragment newInstance(String imageType, File imageFile) {
+        ProductFullPhotoFragment fragment = new ProductFullPhotoFragment();
         Bundle args = new Bundle();
-        args.putString(SC.IMAGE_TYPE, imgPlaceholderType);
+        args.putString(SC.IMAGE_FULL_NAME, imageFile.getAbsolutePath());
+        args.putString(SC.IMAGE_TYPE, imageType);
         fragment.setArguments(args);
+
         return fragment;
     }
-    public ProductPlaceholderPhotoFragment() {
+    public ProductFullPhotoFragment() {
         // Required empty public constructor
     }
 
@@ -51,35 +56,42 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imageType = getArguments().getString(SC.IMAGE_TYPE);
-
+        imageWorker = new ImageLoader(this.getActivity());
+        fillImageFile(savedInstanceState);
 
     }
+    private void fillImageFile(Bundle savedInstanceState) {
+        String filename;
+        if (savedInstanceState == null) {
+            filename = getArguments().getString(SC.IMAGE_FULL_NAME);
+        }
+        else {
+            filename = savedInstanceState.getString(SC.IMAGE_FULL_NAME);
+        }
+        imageFile = new File(filename);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString(SC.IMAGE_FULL_NAME, imageFile.getAbsolutePath());
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_placeholder_product_photo, container, false);
-        ImageView placeholder =  (ImageView)view.findViewById(R.id.placeholder_photo);
-        if (imageType == ProductImageTypes.OVERVIEW) {
-            placeholder.setImageResource(R.drawable.product_placeholder);
-        }
-        else if (imageType == ProductImageTypes.INGREDIENTS) {
-            placeholder.setImageResource(R.drawable.ingredients_placeholder);
-        }
-        setupListeners(view);
+        View view = inflater.inflate(R.layout.fragment_full_screen_photo, container, false);
+        ImageView imageView =  (ImageView)view.findViewById(R.id.image_view);
+        imageWorker.loadImage(imageFile, imageView);
         return view;
     }
 
     public void onPhotoSelected(Bitmap imageBitmap) {
-        if (mListener != null) {
-            mListener.savePhoto(imageBitmap, imageType);
+        if (listener != null) {
+            listener.savePhoto(imageBitmap, imageType);
         }
-    }
-
-    private void setupListeners(View view) {
-        photo  =  (ImageView)view.findViewById(R.id.placeholder_photo);
-        photo.setOnClickListener(this);
     }
 
 
@@ -87,7 +99,7 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnPhotoInteractionListener) activity;
+            listener = (OnPhotoInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnPhotoInteractionListener");
@@ -97,7 +109,26 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        imageWorker.setExitTasksEarly(false);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        imageWorker.setExitTasksEarly(true);
+        imageWorker.flushCache();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        imageWorker.closeCache();
     }
 
     @Override
@@ -114,7 +145,7 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
         if (requestCode == RequestCodes.IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            photo.setImageBitmap(imageBitmap);
+            imageView.setImageBitmap(imageBitmap);
             onPhotoSelected(imageBitmap);
         }
     }

@@ -1,6 +1,9 @@
-package com.alfd.app.activities.fragments;
+package com.alfd.app.interfaces;
 
+import android.app.ActivityOptions;
 import android.graphics.Bitmap;
+
+import com.alfd.app.data.Product;
 
 import java.io.File;
 
@@ -15,7 +18,8 @@ import java.io.File;
  * >Communicating with Other Fragments</a> for more information.
  */
 public interface OnPhotoInteractionListener {
-    // TODO: Update argument type and name
-    public void onPhotoSelected(Bitmap imageBitmap, String imageType);
+    public void savePhoto(Bitmap imageBitmap, String imageType);
     File[] getImageFiles(String imageType);
+    void showFullScreenDetail(File currentImage, ActivityOptions options);
+
 }

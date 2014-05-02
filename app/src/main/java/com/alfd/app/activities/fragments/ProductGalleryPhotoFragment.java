@@ -9,22 +9,19 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import com.alfd.app.BuildConfig;
 import com.alfd.app.R;
 import com.alfd.app.SC;
-import com.alfd.app.activities.ImageDetailActivity;
+import com.alfd.app.activities.ProductFullScreenActivity;
 import com.alfd.app.adapters.ImageAdapter;
+import com.alfd.app.interfaces.OnPhotoInteractionListener;
 import com.alfd.app.utils.ImageCache;
 import com.alfd.app.utils.ImageResizer;
 import com.alfd.app.utils.Utils;
@@ -189,19 +186,15 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-        final Intent i = new Intent(getActivity(), ImageDetailActivity.class);
         File f = (File)adapter.getItem(position);
-        i.putExtra(SC.IMAGE_FULL_NAME, f.getAbsolutePath());
+        ActivityOptions options = null;
         if (Utils.hasJellyBean()) {
             // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
             // show plus the thumbnail image in GridView is cropped. so using
             // makeScaleUpAnimation() instead.
-            ActivityOptions options =
-                    ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
-            getActivity().startActivity(i, options.toBundle());
-        } else {
-            startActivity(i);
+            options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
         }
+        listener.showFullScreenDetail(f, options);
     }
 
 
