@@ -2,6 +2,7 @@ package com.alfd.app;
 
 import com.activeandroid.ActiveAndroid;
 import com.alfd.app.data.DbSeed;
+import com.alfd.app.utils.FileHelpers;
 
 
 /**
@@ -19,6 +20,7 @@ public class AlfdApplication extends android.app.Application {
         //getBaseContext().deleteDatabase(dbName);
 
         seedDb();
+        FileHelpers.ensureDirectoryStructureExists(getBaseContext());
     }
 
     protected void seedDb()

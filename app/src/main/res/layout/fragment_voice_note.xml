@@ -1,0 +1,142 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    tools:context="com.alfd.app.activities.fragments.VoiceNoteFragment"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/record_layout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/record_voice_note_question"
+            android:id="@+id/record_voice_label"
+            android:layout_gravity="center_horizontal"
+            style="@style/hero_text"
+            android:layout_alignParentStart="false"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_medium" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="false"
+            android:layout_below="@+id/record_voice_label"
+            android:layout_marginTop="@dimen/margin_huge"
+            android:layout_centerHorizontal="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00.00"
+                android:id="@+id/stop_watch"
+                style="@style/stop_watch_text"
+                android:layout_alignParentBottom="false"
+                android:layout_alignParentTop="false"
+                android:layout_alignParentEnd="false"
+                android:layout_marginBottom="@dimen/margin_small"
+                android:layout_centerHorizontal="true" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/stop_watch"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/margin_medium">
+
+                <ImageButton
+                    android:layout_width="@dimen/touch_button_medium"
+                    android:layout_height="@dimen/touch_button_medium"
+                    android:id="@+id/btn_record"
+                    android:layout_below="@+id/stop_watch"
+                    style="@style/media_button"
+                    android:layout_alignParentLeft="true"
+                    android:background="@drawable/record_button" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/play_layout">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/voice_note_icon"
+            android:src="@drawable/voice_note_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
+            android:cropToPadding="false"
+            android:baselineAlignBottom="false" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Button"
+            android:id="@+id/btn_delete"
+            android:src="@drawable/delete_circle_button"
+            style="@style/default_button"
+            android:background="@android:color/transparent"
+            android:layout_alignTop="@+id/voice_note_icon"
+            android:layout_alignRight="@+id/voice_note_icon"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="30dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/note_detail_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentEnd="false"
+            android:layout_alignBottom="@+id/voice_note_icon"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3 mins ago"
+                android:id="@+id/date_taken"
+                android:layout_gravity="center_horizontal"
+                style="@style/large_text_view"
+                android:layout_margin="6dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="duration: 6s"
+                android:id="@+id/duration"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btn_play"
+            style="@style/media_button"
+            android:layout_alignParentLeft="false"
+            android:background="@drawable/play_button"
+            android:layout_alignParentBottom="false"
+            android:layout_alignWithParentIfMissing="false"
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="false"
+            android:layout_alignParentTop="false"
+            android:layout_alignParentRight="false"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/voice_note_icon" />
+    </RelativeLayout>
+
+</LinearLayout>

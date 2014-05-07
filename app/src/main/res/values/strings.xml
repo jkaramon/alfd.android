@@ -17,5 +17,7 @@
     <string name="scanning_bar_code">Scanning bar code ...</string>
     <string name="scan">Scan</string>
     <string name="title_activity_image_detail">%s: img</string>
+    <string name="record_voice_note_question">Record a voice note?</string>
+    <string name="recorded_voice_note">Recorded voice note</string>
 
 </resources>

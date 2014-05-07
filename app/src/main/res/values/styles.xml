@@ -12,7 +12,7 @@
     <color name="gray_darker">#6D6D6D</color>
     <color name="gray_dark">#353535</color>
     <color name="black">#000000</color>
-
+    <color name="red">#ff0000</color>
 
 
     <!-- Base application theme. -->
@@ -20,13 +20,16 @@
         <item name="android:buttonStyle">@style/default_button</item>
         <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
-        <item name="android:windowBackground">@color/primary_light</item>
+        <item name="android:windowBackground">@color/white</item>
         <item name="android:textViewStyle">@style/my_text_view</item>
     </style>
 
 
     <style name="my_text_view" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/gray</item>
+    </style>
+    <style name="large_text_view" parent="my_text_view">
+        <item name="android:textSize">22sp</item>
     </style>
 
     <style name="MyActionBar"
@@ -74,4 +77,14 @@
         <item name="android:textColor">@color/gray_lighter</item>
     </style>
 
-  </resources>
+    <style name="stop_watch_text">
+        <item name="android:textSize">@dimen/text_xxlarge</item>
+        <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="media_button">
+        <item name="android:padding">10dp</item>
+    </style>
+
+
+</resources>

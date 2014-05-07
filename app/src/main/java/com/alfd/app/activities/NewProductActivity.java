@@ -10,6 +10,7 @@ import com.alfd.app.ProductImageTypes;
 import com.alfd.app.R;
 import com.alfd.app.activities.fragments.ProductGalleryPhotoFragment;
 import com.alfd.app.activities.fragments.ProductPlaceholderPhotoFragment;
+import com.alfd.app.activities.fragments.VoiceNoteFragment;
 import com.alfd.app.adapters.NewProductPageAdapter;
 import com.alfd.app.data.Product;
 
@@ -40,6 +41,7 @@ public class NewProductActivity extends BaseProductActivity  {
         List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(getProductPhotoFragment(ProductImageTypes.OVERVIEW));
         fragments.add(getProductPhotoFragment(ProductImageTypes.INGREDIENTS));
+        fragments.add(VoiceNoteFragment.newInstance());
         return fragments;
     }
 
