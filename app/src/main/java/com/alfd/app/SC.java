@@ -5,6 +5,8 @@ package com.alfd.app;
  */
 public class SC {
     public static final String BAR_CODE = "bar_code";
+    public static final String PRODUCT_NAME = "product_name";
+
     public static final String BAR_TYPE = "bar_type";
     public static final String IMAGE_TYPE = "image_type";
 

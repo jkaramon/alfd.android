@@ -16,6 +16,8 @@ import com.alfd.app.SC;
 import com.alfd.app.intents.IntentFactory;
 import com.alfd.app.interfaces.OnPhotoInteractionListener;
 import com.alfd.app.utils.ImageLoader;
+import com.alfd.app.utils.ImageResizer;
+import com.alfd.app.views.RecyclingImageView;
 
 import java.io.File;
 
@@ -34,7 +36,7 @@ public class ProductFullPhotoFragment extends Fragment implements View.OnClickLi
     private ImageView imageView;
     private String imageType;
     private File imageFile;
-    private ImageLoader imageWorker;
+    private ImageResizer imageWorker;
 
     private OnPhotoInteractionListener listener;
 
@@ -56,7 +58,7 @@ public class ProductFullPhotoFragment extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imageType = getArguments().getString(SC.IMAGE_TYPE);
-        imageWorker = new ImageLoader(this.getActivity());
+        imageWorker = new ImageResizer(this.getActivity(), 640, 480);
         fillImageFile(savedInstanceState);
 
     }
@@ -84,15 +86,12 @@ public class ProductFullPhotoFragment extends Fragment implements View.OnClickLi
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_full_screen_photo, container, false);
         ImageView imageView =  (ImageView)view.findViewById(R.id.image_view);
+
+
         imageWorker.loadImage(imageFile, imageView);
         return view;
     }
 
-    public void onPhotoSelected(Bitmap imageBitmap) {
-        if (listener != null) {
-            listener.savePhoto(imageBitmap, imageType);
-        }
-    }
 
 
     @Override
@@ -137,16 +136,13 @@ public class ProductFullPhotoFragment extends Fragment implements View.OnClickLi
     }
 
     private void takePicture() {
-        IntentFactory.takePicture(this);
+        IntentFactory.takePicture(this, listener.getFileToSave(imageType));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RequestCodes.IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
-            onPhotoSelected(imageBitmap);
+
         }
     }
 

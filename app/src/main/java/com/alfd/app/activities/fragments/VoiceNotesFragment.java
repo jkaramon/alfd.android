@@ -1,57 +1,47 @@
 package com.alfd.app.activities.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.alfd.app.LogTags;
 import com.alfd.app.R;
+import com.alfd.app.adapters.VoiceNotesAdapter;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link VoiceNoteFragment.OnFragmentInteractionListener} interface
+ * {@link VoiceNotesFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link VoiceNoteFragment#newInstance} factory method to
+ * Use the {@link VoiceNotesFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  */
-public class VoiceNoteFragment extends Fragment {
+public class VoiceNotesFragment extends Fragment {
 
-    private ImageButton stopButton = null;
     private ImageButton recordButton = null;
     private MediaRecorder recorder = null;
-
-    private ImageButton deleteButton = null;
-    private ImageButton playButton = null;
     private MediaPlayer player = null;
     private OnFragmentInteractionListener listener;
-    private Timer timer;
-    private long timeElapsed = 0;
-    private TextView stopWatchText = null;
 
-    private RelativeLayout playLayout = null;
     private RelativeLayout recordLayout = null;
-    private int stopWatchOriginalColor;
+
+    private VoiceNotesAdapter adapter;
+    private GridView gridView;
 
 
     public enum RecordMediaState {
@@ -61,25 +51,16 @@ public class VoiceNoteFragment extends Fragment {
         PLAYING, STOPPED
     }
     private RecordMediaState recordingState = RecordMediaState.STOPPED;
-    private PlayMediaState playingState = PlayMediaState.STOPPED.STOPPED;
+    private PlayMediaState playingState = PlayMediaState.STOPPED;
 
-
-    final Handler timerHandler = new Handler();
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment VoiceNoteFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static VoiceNoteFragment newInstance() {
-        VoiceNoteFragment fragment = new VoiceNoteFragment();
+    public static VoiceNotesFragment newInstance() {
+        VoiceNotesFragment fragment = new VoiceNotesFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
         return fragment;
     }
-    public VoiceNoteFragment() {
+    public VoiceNotesFragment() {
         // Required empty public constructor
     }
 
@@ -89,83 +70,99 @@ public class VoiceNoteFragment extends Fragment {
         if (getArguments() != null) {
 
         }
+        adapter = new VoiceNotesAdapter(getActivity());
+        updateNotesList();
+    }
+
+    private void updateNotesList() {
+        File[] files = listener.getVoiceNoteFiles();
+        adapter.setVoiceFiles(files);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_voice_note, container, false);
+        View view = inflater.inflate(R.layout.fragment_voice_notes, container, false);
+        gridView = (GridView)view.findViewById(R.id.grid_view);
+        gridView.setAdapter(adapter);
         recordButton = (ImageButton)view.findViewById(R.id.btn_record);
-        playButton = (ImageButton)view.findViewById(R.id.btn_play);
-        deleteButton = (ImageButton)view.findViewById(R.id.btn_delete);
-
-        stopWatchText = (TextView)view.findViewById(R.id.stop_watch);
-        stopWatchOriginalColor = stopWatchText.getDrawingCacheBackgroundColor();
-        playLayout = (RelativeLayout)view.findViewById(R.id.play_layout);
         recordLayout = (RelativeLayout)view.findViewById(R.id.record_layout);
+
+
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                VoiceNotesAdapter.VoiceFile vf = (VoiceNotesAdapter.VoiceFile)adapter.getItem(i);
+                deleteNote(vf);
+                return true;
+            }
+        });
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                VoiceNotesAdapter.VoiceFile vf = (VoiceNotesAdapter.VoiceFile)adapter.getItem(i);
+                playOrStopItem(vf);
+            }
+        });
+
 
         recordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (recordingState == RecordMediaState.STOPPED) {
                     startRecording();
-                }
-                else {
+                } else {
                     stopRecording();
                 }
             }
         });
-
-        deleteButton .setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteNote();
-            }
-        });
-
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (playingState == PlayMediaState.STOPPED) {
-                    startPlaying();
-                }
-                else {
-                    stopPlaying();
-                }
-            }
-        });
-        determinePlayRecordState();
         return view;
     }
 
-    private void determinePlayRecordState() {
-        File noteFile = listener.onVoiceNoteFileRequested();
-        if (noteFile.exists()) {
-            recordLayout.setVisibility(View.GONE);
-            playLayout.setVisibility(View.VISIBLE);
+    private void playOrStopItem(VoiceNotesAdapter.VoiceFile vf) {
+        if (recordingState == RecordMediaState.RECORDING) {
+            return;
         }
-        else {
-            recordLayout.setVisibility(View.VISIBLE);
-            playLayout.setVisibility(View.GONE);
+        boolean startPlaying = !vf.isPlaying();
+        adapter.stopAll();
+        stopMediaPlayer(vf);
+        if (startPlaying) {
+            startMediaPlayer(vf);
         }
     }
 
-    private void deleteNote() {
+
+    private void deleteNote(VoiceNotesAdapter.VoiceFile vf) {
         recordingState = RecordMediaState.STOPPED;
-        stopPlaying();
-        listener.deleteNote();
-        determinePlayRecordState();
+        playingState = PlayMediaState.STOPPED;
+        stopMediaPlayer(vf);
+        stopRecording();
+        //stopMediaPlayer();
+        listener.deleteNote(vf.getFile());
+        adapter.notifyDataSetChanged();
 
     }
 
 
-    private void startPlaying() {
+    private void startMediaPlayer(final VoiceNotesAdapter.VoiceFile vf) {
         player = new MediaPlayer();
+        File f = vf.getFile();
+        vf.startPlaying();
         try {
-            player.setDataSource(listener.onVoiceNoteFileRequested().getAbsolutePath());
+
+            player.setDataSource(f.getAbsolutePath());
             player.prepare();
             player.start();
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    stopMediaPlayer(vf);
+                    adapter.stopAll();
+                }
+            });
             playingState = PlayMediaState.PLAYING;
             enteringPlayingState();
         } catch (IOException e) {
@@ -174,41 +171,28 @@ public class VoiceNoteFragment extends Fragment {
         }
     }
 
-    private void stopPlaying() {
-        playButton.setEnabled(false);
-        player.release();
-        player = null;
+    private void stopMediaPlayer(VoiceNotesAdapter.VoiceFile vf) {
+        if (player != null) {
+            player.release();
+            player = null;
+        }
+        vf.stopPlaying();
         enteringPlayStoppedState();
         playingState = PlayMediaState.STOPPED;
-        playButton.setEnabled(true);
+
     }
 
     private void startRecording() {
         recordButton.setEnabled(false);
-        timeElapsed = 0;
-        updateStopWatchText();
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        recorder.setOutputFile(listener.onVoiceNoteFileRequested().getAbsolutePath());
+        recorder.setOutputFile(listener.createVoiceNoteFile().getAbsolutePath());
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
 
         try {
             recorder.prepare();
-            timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                        timerHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                timeElapsed += 50;
-                                updateStopWatchText();
-                            }
-                        });
-                }
-            }, 0, 50);
             recorder.start();
             recordingState = RecordMediaState.RECORDING;
             enteringRecordingState();
@@ -224,32 +208,23 @@ public class VoiceNoteFragment extends Fragment {
 
     private void enteringRecordStoppedState() {
         recordButton.setBackgroundResource(R.drawable.record_button);
-        recordLayout.setVisibility(View.GONE);
-        playLayout.setVisibility(View.VISIBLE);
-        stopWatchText.setTextColor(stopWatchOriginalColor);
+
+
 
 
     }
     private void enteringRecordingState() {
         recordButton.setBackgroundResource(R.drawable.stop_record_button);
-        stopWatchText.setTextColor(getResources().getColor(R.color.red));
 
     }
 
     private void enteringPlayingState() {
-        playButton.setBackgroundResource(R.drawable.stop_button);
 
     }
     private void enteringPlayStoppedState() {
-        playButton.setBackgroundResource(R.drawable.play_button);
     }
 
-    private void updateStopWatchText() {
-        Date date = new Date(timeElapsed);
-        DateFormat formatter = new SimpleDateFormat("mm:ss:SS");
-        String dateFormatted = formatter.format(date);
-        stopWatchText.setText(dateFormatted);
-    }
+
 
     private void stopRecording() {
         recordButton.setEnabled(false);
@@ -257,12 +232,12 @@ public class VoiceNoteFragment extends Fragment {
             recorder.stop();
             recorder.release();
             listener.onVoiceNoteRecorded();
-            timer.cancel();
-            timer = null;
+
             recorder = null;
         }
         recordButton.setEnabled(true);
         enteringRecordStoppedState();
+        updateNotesList();
         recordingState = RecordMediaState.STOPPED;
     }
 
@@ -300,9 +275,10 @@ public class VoiceNoteFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onVoiceNoteRecorded();
-        public File onVoiceNoteFileRequested();
+        public File createVoiceNoteFile();
+        public File[] getVoiceNoteFiles();
 
-        void deleteNote();
+        void deleteNote(File file);
     }
 
 }

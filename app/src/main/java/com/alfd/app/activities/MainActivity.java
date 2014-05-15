@@ -71,10 +71,7 @@ public class MainActivity extends BaseActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        Product test = new Product();
-        test.BarCode = "0123456789012";
-        test.BarType = "EAN13";
-        onCreateProduct(test);
+
 
         if (savedInstanceState != null)
         {

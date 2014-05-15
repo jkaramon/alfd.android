@@ -1,16 +1,23 @@
 package com.alfd.app.data;
 
+import android.content.Context;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.alfd.app.utils.FileHelpers;
+
 import net.sourceforge.zbar.Symbol;
+
+import java.util.UUID;
 
 /**
  * Created by karamon on 10. 4. 2014.
+ *
  */
 @Table(name = "Products")
-public class Product extends BaseModel {
+public class Product extends BaseServerModel {
     @Column
     public String Name;
     @Column
@@ -22,7 +29,7 @@ public class Product extends BaseModel {
     @Column
     public String OverviewPhotos;
     @Column
-    public String IngredientsPhoto;
+    public String IngredientsPhotos;
     @Column
     public String Description;
 
@@ -62,5 +69,36 @@ public class Product extends BaseModel {
             default:
                 return null;
         }
+    }
+
+
+
+
+
+
+    public void moveTempFiles(Context ctx) {
+        copyTempImagesToSync(ctx);
+        copyTempVoicesToSync(ctx);
+
+        createProductImages(ctx);
+        moveTempVoiceNotesToProductDir(ctx);
+
+
+    }
+
+    private void moveTempVoiceNotesToProductDir(Context ctx) {
+        FileHelpers.moveTempVoiceNotesToProductDir(ctx, UniqueId, BarCode);
+    }
+
+    private void createProductImages(Context ctx) {
+
+    }
+
+    private void copyTempVoicesToSync(Context ctx) {
+        FileHelpers.copyTempVoicesToSync(ctx, UniqueId, BarCode);
+    }
+
+    private void copyTempImagesToSync(Context ctx) {
+        FileHelpers.copyTempImagesToSync(ctx, UniqueId, BarCode);
     }
 }

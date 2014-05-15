@@ -9,18 +9,16 @@ import android.view.MenuItem;
 import com.alfd.app.ProductImageTypes;
 import com.alfd.app.R;
 import com.alfd.app.activities.fragments.ProductGalleryPhotoFragment;
+import com.alfd.app.activities.fragments.ProductNameFragment;
 import com.alfd.app.activities.fragments.ProductPlaceholderPhotoFragment;
-import com.alfd.app.activities.fragments.VoiceNoteFragment;
+import com.alfd.app.activities.fragments.VoiceNotesFragment;
 import com.alfd.app.adapters.NewProductPageAdapter;
-import com.alfd.app.data.Product;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class NewProductActivity extends BaseProductActivity  {
-
-    private Product product;
     private NewProductPageAdapter pageAdapter;
 
     @Override
@@ -30,9 +28,13 @@ public class NewProductActivity extends BaseProductActivity  {
 
 
         List<Fragment> fragments = getFragments();
-        pageAdapter = new NewProductPageAdapter(getSupportFragmentManager(), fragments);
+        String[] titles = getResources().getStringArray(R.array.new_product_pages);
+        pageAdapter = new NewProductPageAdapter(getSupportFragmentManager(), fragments, titles);
         ViewPager pager = (ViewPager)findViewById(R.id.view_pager);
         pager.setAdapter(pageAdapter);
+
+
+
 
 
     }
@@ -41,7 +43,8 @@ public class NewProductActivity extends BaseProductActivity  {
         List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(getProductPhotoFragment(ProductImageTypes.OVERVIEW));
         fragments.add(getProductPhotoFragment(ProductImageTypes.INGREDIENTS));
-        fragments.add(VoiceNoteFragment.newInstance());
+        fragments.add(VoiceNotesFragment.newInstance());
+        fragments.add(ProductNameFragment.newInstance());
         return fragments;
     }
 

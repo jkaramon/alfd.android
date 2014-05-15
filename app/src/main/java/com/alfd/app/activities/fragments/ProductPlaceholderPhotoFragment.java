@@ -33,7 +33,7 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
     private String imageType;
 
 
-    private OnPhotoInteractionListener mListener;
+    private OnPhotoInteractionListener listener;
 
     // TODO: Rename and change types and number of parameters
     public static ProductPlaceholderPhotoFragment newInstance(String imgPlaceholderType) {
@@ -71,11 +71,6 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
         return view;
     }
 
-    public void onPhotoSelected(Bitmap imageBitmap) {
-        if (mListener != null) {
-            mListener.savePhoto(imageBitmap, imageType);
-        }
-    }
 
     private void setupListeners(View view) {
         photo  =  (ImageView)view.findViewById(R.id.placeholder_photo);
@@ -87,7 +82,7 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnPhotoInteractionListener) activity;
+            listener = (OnPhotoInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnPhotoInteractionListener");
@@ -97,7 +92,7 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+        listener = null;
     }
 
     @Override
@@ -106,16 +101,14 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
     }
 
     private void takePicture() {
-        IntentFactory.takePicture(this);
+        IntentFactory.takePicture(this, listener.getFileToSave(imageType));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RequestCodes.IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            photo.setImageBitmap(imageBitmap);
-            onPhotoSelected(imageBitmap);
+
+            
         }
     }
 

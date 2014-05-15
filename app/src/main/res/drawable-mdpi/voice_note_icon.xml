@@ -4,13 +4,13 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
 <item>
     <shape android:shape="rectangle">
-        <size android:width="200dp" android:height="250dp"/>
-        <solid android:color="@color/primary_light" />
-        <stroke android:width="10dp" android:color="@color/gray_light"></stroke>
-        <corners android:radius="30dp"></corners>
+        <size android:width="120dp" android:height="120dp"/>
+        <solid android:color="@color/white" />
+        <stroke android:width="3dp" android:color="@color/gray_light"></stroke>
+        <corners android:radius="2dp"></corners>
     </shape>
 </item>
-<item android:top="0dp" android:left="10dp" android:bottom="55dp" android:right="10dp">
+<item android:top="20dp" android:left="10dp" android:bottom="10dp" android:right="10dp">
     <bitmap android:src="@android:drawable/ic_btn_speak_now"></bitmap>
 </item>
 </layer-list>

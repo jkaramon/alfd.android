@@ -3,29 +3,22 @@ package com.alfd.app.activities;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 
-import com.alfd.app.R;
 import com.alfd.app.SC;
-import com.alfd.app.activities.fragments.VoiceNoteFragment;
-import com.alfd.app.adapters.NewProductPageAdapter;
+import com.alfd.app.activities.fragments.ProductNameFragment;
+import com.alfd.app.activities.fragments.VoiceNotesFragment;
 import com.alfd.app.interfaces.OnPhotoInteractionListener;
 import com.alfd.app.data.Product;
 import com.alfd.app.utils.FileHelpers;
-import com.alfd.app.utils.Utils;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.util.List;
 
 /**
  * Created by karamon on 2. 5. 2014.
  */
-public class BaseProductActivity extends BaseActionBarActivity implements OnPhotoInteractionListener, VoiceNoteFragment.OnFragmentInteractionListener {
+public class BaseProductActivity extends BaseActionBarActivity implements OnPhotoInteractionListener, VoiceNotesFragment.OnFragmentInteractionListener, ProductNameFragment.OnFragmentInteractionListener {
     private Product product;
 
     @Override
@@ -57,12 +50,11 @@ public class BaseProductActivity extends BaseActionBarActivity implements OnPhot
 
 
 
+
+
     @Override
-    public void savePhoto(Bitmap imageBitmap, String imageType) {
-        if (product.isNew()) {
-            File f = FileHelpers.createTempProductImageFile(this, imageType, product.BarCode);
-            FileHelpers.saveImageFile(f, imageBitmap);
-        }
+    public File getFileToSave(String imageType) {
+        return FileHelpers.createTempProductImageFile(this, imageType, product.BarCode);
     }
 
     @Override
@@ -98,18 +90,35 @@ public class BaseProductActivity extends BaseActionBarActivity implements OnPhot
     }
 
     @Override
-    public File onVoiceNoteFileRequested() {
+    public File createVoiceNoteFile() {
         if (product.isNew()) {
-            return FileHelpers.getTempProductVoiceFile(this, product.BarCode);
+            return FileHelpers.createTempProductVoiceFile(this, product.BarCode);
         }
         return null;
     }
 
     @Override
-    public void deleteNote() {
-        File noteFile = FileHelpers.getTempProductVoiceFile(this, product.BarCode);
+    public File[] getVoiceNoteFiles() {
+        return FileHelpers.getProductVoiceTempFiles(this, product.BarCode);
+    }
+
+    @Override
+    public void deleteNote(File noteFile) {
         if (noteFile.exists()) {
             noteFile.delete();
         }
+    }
+
+    @Override
+    public String suggestProductName() {
+        return "Hermelín - král sýrů";
+    }
+
+    @Override
+    public void onCreateProduct(String productName) {
+        product.Name = productName;
+
+        product.saveWithCallbacks();
+
     }
 }

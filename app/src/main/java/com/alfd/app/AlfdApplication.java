@@ -1,5 +1,7 @@
 package com.alfd.app;
 
+import android.util.Log;
+
 import com.activeandroid.ActiveAndroid;
 import com.alfd.app.data.DbSeed;
 import com.alfd.app.utils.FileHelpers;
@@ -17,7 +19,10 @@ public class AlfdApplication extends android.app.Application {
 
         ActiveAndroid.initialize(this);
         String dbName = ActiveAndroid.getDatabase().getPath();
-        //getBaseContext().deleteDatabase(dbName);
+//        boolean deleteOk = getBaseContext().deleteDatabase(dbName);
+//        if (deleteOk) {
+//            Log.d(LogTags.SQL, String.format("DB '%s' successfully deleted!", dbName));
+//        }
 
         seedDb();
         FileHelpers.ensureDirectoryStructureExists(getBaseContext());

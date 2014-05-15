@@ -18,7 +18,7 @@ import java.io.File;
  * >Communicating with Other Fragments</a> for more information.
  */
 public interface OnPhotoInteractionListener {
-    public void savePhoto(Bitmap imageBitmap, String imageType);
+    public File getFileToSave(String imageType);
     File[] getImageFiles(String imageType);
     void showFullScreenDetail(File currentImage, ActivityOptions options);
 
