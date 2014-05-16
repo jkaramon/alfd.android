@@ -21,14 +21,21 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.media.Image;
 import android.os.Build;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 
 
 import com.alfd.app.BuildConfig;
+import com.alfd.app.ImgSize;
 
 import java.io.File;
 import java.io.FileDescriptor;
+
+import static com.alfd.app.ImgSize.LARGE;
 
 /**
  * A simple subclass of {@link ImageWorker} that resizes images from resources given a target width
@@ -158,10 +165,10 @@ public class ImageResizer extends ImageWorker {
         // Calculate inSampleSize
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
-        // If we're running on Honeycomb or newer, try to use inBitmap
-        if (Utils.hasHoneycomb()) {
-            addInBitmapOptions(options, cache);
-        }
+//        // If we're running on Honeycomb or newer, try to use inBitmap
+//        if (Utils.hasHoneycomb() && cache != null) {
+//            addInBitmapOptions(options, cache);
+//        }
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
@@ -218,21 +225,8 @@ public class ImageResizer extends ImageWorker {
         //END_INCLUDE(add_bitmap_options)
     }
 
-    /**
-     * Calculate an inSampleSize for use in a {@link android.graphics.BitmapFactory.Options} object when decoding
-     * bitmaps using the decode* methods from {@link android.graphics.BitmapFactory}. This implementation calculates
-     * the closest inSampleSize that is a power of 2 and will result in the final decoded bitmap
-     * having a width and height equal to or larger than the requested width and height.
-     *
-     * @param options An options object with out* params already populated (run through a decode*
-     *            method with inJustDecodeBounds==true
-     * @param reqWidth The requested width of the resulting bitmap
-     * @param reqHeight The requested height of the resulting bitmap
-     * @return The value to be used for inSampleSize
-     */
-    public static int calculateInSampleSize(BitmapFactory.Options options,
-            int reqWidth, int reqHeight) {
-        // BEGIN_INCLUDE (calculate_sample_size)
+    private static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
         // Raw height and width of image
         final int height = options.outHeight;
         final int width = options.outWidth;
@@ -240,33 +234,28 @@ public class ImageResizer extends ImageWorker {
 
         if (height > reqHeight || width > reqWidth) {
 
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
+            // Calculate ratios of height and width to requested height and width
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
 
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-
-            // This offers some additional logic in case the image has a strange
-            // aspect ratio. For example, a panorama may have a much larger
-            // width than height. In these cases the total pixels might still
-            // end up being too large to fit comfortably in memory, so we should
-            // be more aggressive with sample down the image (=larger inSampleSize).
-
-            long totalPixels = width * height / inSampleSize;
-
-            // Anything more than 2x the requested pixels we'll sample down further
-            final long totalReqPixelsCap = reqWidth * reqHeight * 2;
-
-            while (totalPixels > totalReqPixelsCap) {
-                inSampleSize *= 2;
-                totalPixels /= 2;
-            }
+            // Choose the smallest ratio as inSampleSize value, this will guarantee
+            // a final image with both dimensions larger than or equal to the
+            // requested height and width.
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
         }
+
         return inSampleSize;
-        // END_INCLUDE (calculate_sample_size)
+    }
+
+
+
+
+    public static Point getImageSize(Context ctx, ImgSize size) {
+        switch (size) {
+            case THUMB:
+                return new Point(120, 160);
+            default:
+                return new Point(1024, 768);
+        }
     }
 }

@@ -3,6 +3,7 @@ package com.alfd.app.activities;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ import com.alfd.app.activities.fragments.ProductNameFragment;
 import com.alfd.app.activities.fragments.VoiceNotesFragment;
 import com.alfd.app.interfaces.OnPhotoInteractionListener;
 import com.alfd.app.data.Product;
+import com.alfd.app.tasks.MoveTempProductFiles;
 import com.alfd.app.utils.FileHelpers;
 
 import java.io.File;
@@ -117,8 +119,8 @@ public class BaseProductActivity extends BaseActionBarActivity implements OnPhot
     @Override
     public void onCreateProduct(String productName) {
         product.Name = productName;
-
         product.saveWithCallbacks();
-
+        MoveTempProductFiles moveTempProductFiles = new MoveTempProductFiles(this);
+        AsyncTask<Product, Integer, Long> task = moveTempProductFiles.execute(product);
     }
 }

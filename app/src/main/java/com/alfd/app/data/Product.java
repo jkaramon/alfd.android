@@ -2,15 +2,12 @@ package com.alfd.app.data;
 
 import android.content.Context;
 
-import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 import com.alfd.app.utils.FileHelpers;
 
 import net.sourceforge.zbar.Symbol;
-
-import java.util.UUID;
 
 /**
  * Created by karamon on 10. 4. 2014.
@@ -79,11 +76,15 @@ public class Product extends BaseServerModel {
     public void moveTempFiles(Context ctx) {
         copyTempImagesToSync(ctx);
         copyTempVoicesToSync(ctx);
-
         createProductImages(ctx);
         moveTempVoiceNotesToProductDir(ctx);
+        clearProductTempDir(ctx);
 
 
+    }
+
+    private void clearProductTempDir(Object ctx) {
+        FileHelpers.clearProductTempDir(ctx);
     }
 
     private void moveTempVoiceNotesToProductDir(Context ctx) {
@@ -91,6 +92,7 @@ public class Product extends BaseServerModel {
     }
 
     private void createProductImages(Context ctx) {
+        FileHelpers.createProductImagesFromTempImages(ctx, UniqueId, BarCode);
 
     }
 
