@@ -22,11 +22,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.media.Image;
 import android.os.Build;
 import android.util.Log;
-import android.view.Display;
-import android.view.WindowManager;
 
 
 import com.alfd.app.BuildConfig;
@@ -35,8 +32,6 @@ import com.alfd.app.ImgSize;
 import java.io.File;
 import java.io.FileDescriptor;
 
-import static com.alfd.app.ImgSize.LARGE;
-
 /**
  * A simple subclass of {@link ImageWorker} that resizes images from resources given a target width
  * and height. Useful for when the input images might be too large to simply load directly into
@@ -44,31 +39,24 @@ import static com.alfd.app.ImgSize.LARGE;
  */
 public class ImageResizer extends ImageWorker {
     private static final String TAG = "ImageResizer";
-    protected int mImageWidth;
-    protected int mImageHeight;
+    protected int imageWidth;
+    protected int imageHeight;
 
     /**
      * Initialize providing a single target image size (used for both width and height);
      *
      * @param context
-     * @param imageWidth
-     * @param imageHeight
+     * @param size
      */
-    public ImageResizer(Context context, int imageWidth, int imageHeight) {
+    public ImageResizer(Context context, ImgSize size) {
         super(context);
+        Point p = getImageSize(context, size);
+        imageWidth = p.x;
+        imageHeight = p.y;
         setImageSize(imageWidth, imageHeight);
     }
 
-    /**
-     * Initialize providing a single target image size (used for both width and height);
-     *
-     * @param context
-     * @param imageSize
-     */
-    public ImageResizer(Context context, int imageSize) {
-        super(context);
-        setImageSize(imageSize);
-    }
+
 
     /**
      * Set the target image width and height.
@@ -77,8 +65,8 @@ public class ImageResizer extends ImageWorker {
      * @param height
      */
     public void setImageSize(int width, int height) {
-        mImageWidth = width;
-        mImageHeight = height;
+        imageWidth = width;
+        imageHeight = height;
     }
 
     /**
@@ -101,8 +89,8 @@ public class ImageResizer extends ImageWorker {
         if (BuildConfig.DEBUG) {
             Log.d(TAG, "processBitmap - " + file.getAbsolutePath());
         }
-        return decodeSampledBitmapFromFile(file.getAbsolutePath(), mImageWidth,
-                mImageHeight, getImageCache());
+        return decodeSampledBitmapFromFile(file.getAbsolutePath(), imageWidth,
+                imageHeight, getImageCache());
     }
 
     @Override
@@ -254,6 +242,8 @@ public class ImageResizer extends ImageWorker {
         switch (size) {
             case THUMB:
                 return new Point(120, 160);
+            case SMALL:
+                return new Point(200, 320);
             default:
                 return new Point(1024, 768);
         }

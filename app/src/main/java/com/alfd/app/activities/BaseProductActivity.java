@@ -21,7 +21,7 @@ import java.io.File;
  * Created by karamon on 2. 5. 2014.
  */
 public class BaseProductActivity extends BaseActionBarActivity implements OnPhotoInteractionListener, VoiceNotesFragment.OnFragmentInteractionListener, ProductNameFragment.OnFragmentInteractionListener {
-    private Product product;
+    protected Product product;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,20 +34,36 @@ public class BaseProductActivity extends BaseActionBarActivity implements OnPhot
         product = new Product();
         if (savedInstanceState == null) {
             Intent i = getIntent();
-            product.BarCode = i.getStringExtra(SC.BAR_CODE);
-            product.BarType = i.getStringExtra(SC.BAR_TYPE);
+            long productId = i.getLongExtra(SC.PRODUCT_ID, -1);
+            if (productId != -1) {
+                product = Product.load(Product.class, productId);
+            }
+            else {
+                product.BarCode = i.getStringExtra(SC.BAR_CODE);
+                product.BarType = i.getStringExtra(SC.BAR_TYPE);
+            }
         }
         else {
-            product.BarCode = savedInstanceState.getString(SC.BAR_CODE);
-            product.BarType = savedInstanceState.getString(SC.BAR_TYPE);
+            long productId = savedInstanceState.getLong(SC.PRODUCT_ID, -1);
+            if (productId != -1) {
+                product = Product.load(Product.class, productId);
+            }
+            else {
+                product.BarCode = savedInstanceState.getString(SC.BAR_CODE);
+                product.BarType = savedInstanceState.getString(SC.BAR_TYPE);
+            }
         }
     }
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString(SC.BAR_CODE, product.BarCode);
-        savedInstanceState.putString(SC.BAR_TYPE, product.BarType);
-
+        if (product.isNew()) {
+            savedInstanceState.putString(SC.BAR_CODE, product.BarCode);
+            savedInstanceState.putString(SC.BAR_TYPE, product.BarType);
+        }
+        else {
+            savedInstanceState.putLong(SC.PRODUCT_ID, product.getId());
+        }
     }
 
 
@@ -55,7 +71,7 @@ public class BaseProductActivity extends BaseActionBarActivity implements OnPhot
 
 
     @Override
-    public File getFileToSave(String imageType) {
+    public File getTempFileToSave(String imageType) {
         return FileHelpers.createTempProductImageFile(this, imageType, product.BarCode);
     }
 
@@ -64,7 +80,10 @@ public class BaseProductActivity extends BaseActionBarActivity implements OnPhot
         if (product.isNew()) {
             return FileHelpers.getProductImageTempFiles(this, imageType, product.BarCode);
         }
-        return new File[0];
+        else {
+            // TODO: Implement!
+            return null;
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -96,12 +115,20 @@ public class BaseProductActivity extends BaseActionBarActivity implements OnPhot
         if (product.isNew()) {
             return FileHelpers.createTempProductVoiceFile(this, product.BarCode);
         }
-        return null;
+        else {
+            return FileHelpers.createProductVoiceFile(this, product.UniqueId);
+        }
     }
 
     @Override
     public File[] getVoiceNoteFiles() {
-        return FileHelpers.getProductVoiceTempFiles(this, product.BarCode);
+        if (product.isNew()) {
+            return FileHelpers.getProductVoiceTempFiles(this, product.BarCode);
+        }
+        else {
+            // TODO: Implement!
+            return product.getVoiceNotes(this);
+        }
     }
 
     @Override

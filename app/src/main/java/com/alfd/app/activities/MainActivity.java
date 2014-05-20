@@ -20,6 +20,7 @@ import com.alfd.app.activities.fragments.NavigationDrawerFragment;
 import com.alfd.app.activities.fragments.NonExistingProductFragment;
 import com.alfd.app.data.Product;
 import com.alfd.app.intents.IntentFactory;
+import com.alfd.app.utils.FragmentUtils;
 
 
 public class MainActivity extends BaseActionBarActivity
@@ -62,6 +63,9 @@ public class MainActivity extends BaseActionBarActivity
         setContentView(R.layout.activity_main);
 
 
+         Product p = Product.load(Product.class, 1);
+        Intent i = IntentFactory.navigateProduct(this, p);
+                startActivity(i);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -90,19 +94,7 @@ public class MainActivity extends BaseActionBarActivity
     }
 
 
-    private void changeFragment(String tag, FragmentFactory factory)
-    {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment f = fragmentManager.findFragmentByTag(tag);
-        if (f == null) {
-            f = factory.create();
-        }
-        currentFragmentTag = tag;
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, f, tag)
-                .commit();
 
-    }
 
 
 
@@ -160,7 +152,8 @@ public class MainActivity extends BaseActionBarActivity
 
         }
         else {
-            renderProductDetailFragment(p.getId());
+            Intent i = IntentFactory.navigateProduct(this, p);
+            startActivity(i);
         }
 
 
@@ -175,11 +168,11 @@ public class MainActivity extends BaseActionBarActivity
                 return HomeFragment.newInstance(sectionIndex);
             }
         };
-        changeFragment(FTags.HOME, factory);
+        currentFragmentTag = FTags.HOME;
+        FragmentUtils.change(this, currentFragmentTag, factory);
     }
 
-    private void renderProductDetailFragment(Long productId) {
-    }
+
 
     private void renderNonExistingProductFragment() {
         // update the main content by replacing fragments
@@ -192,7 +185,9 @@ public class MainActivity extends BaseActionBarActivity
                 return NonExistingProductFragment.newInstance(p);
             }
         };
-        changeFragment(FTags.NON_EXISTING_PRODUCT, factory);
+        currentFragmentTag = FTags.NON_EXISTING_PRODUCT;
+        FragmentUtils.change(this, currentFragmentTag, factory);
+
     }
 
     @Override

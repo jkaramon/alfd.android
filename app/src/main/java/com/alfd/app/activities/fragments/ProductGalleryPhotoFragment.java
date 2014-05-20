@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.alfd.app.BuildConfig;
+import com.alfd.app.ImgSize;
 import com.alfd.app.R;
 import com.alfd.app.SC;
 import com.alfd.app.activities.ProductFullScreenActivity;
@@ -63,7 +64,6 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
         setHasOptionsMenu(true);
         imageType = getArguments().getString(SC.IMAGE_TYPE);
 
-        imageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
         imageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
         ImageCache.ImageCacheParams cacheParams =
@@ -72,7 +72,7 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
         cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
 
         // The ImageFetcher takes care of loading images into our ImageView children asynchronously
-        imageWorker = new ImageResizer(getActivity(), imageThumbSize);
+        imageWorker = new ImageResizer(getActivity(), ImgSize.THUMB);
         imageWorker.setLoadingImage(R.drawable.empty_photo);
         imageWorker.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
 

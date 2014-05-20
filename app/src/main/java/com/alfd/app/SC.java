@@ -14,5 +14,6 @@ public class SC {
 
     public static final String PRODUCT_PHOTO_ID = "product_photo_id";
     public static final String IMAGE_FULL_NAME = "image_full_name";
+    public static final String PRODUCT_ID = "product_id";
 }
 

@@ -1,13 +1,17 @@
 package com.alfd.app.data;
 
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
+import com.alfd.app.ImgSize;
 import com.alfd.app.utils.FileHelpers;
 
 import net.sourceforge.zbar.Symbol;
+
+import java.io.File;
 
 /**
  * Created by karamon on 10. 4. 2014.
@@ -70,7 +74,17 @@ public class Product extends BaseServerModel {
 
 
 
+    public File getPrimaryPhoto(Context ctx) {
+        File[] files = FileHelpers.getProductImageFiles(ctx, UniqueId, ImgSize.LARGE);
+        if (files.length > 0) {
+            return files[0];
+        }
+        return null;
+    }
 
+    public File[] getVoiceNotes(Context ctx) {
+        return FileHelpers.getProductVoiceFiles(ctx, UniqueId);
+    }
 
 
     public void moveTempFiles(Context ctx) {
@@ -83,7 +97,7 @@ public class Product extends BaseServerModel {
 
     }
 
-    private void clearProductTempDir(Object ctx) {
+    private void clearProductTempDir(Context ctx) {
         FileHelpers.clearProductTempDir(ctx);
     }
 
@@ -103,4 +117,6 @@ public class Product extends BaseServerModel {
     private void copyTempImagesToSync(Context ctx) {
         FileHelpers.copyTempImagesToSync(ctx, UniqueId, BarCode);
     }
+
+
 }

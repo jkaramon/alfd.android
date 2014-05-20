@@ -9,6 +9,7 @@ import android.util.Log;
 import com.alfd.app.ImgSize;
 import com.alfd.app.LogTags;
 import com.alfd.app.ProductImageTypes;
+import com.alfd.app.activities.BaseProductActivity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,7 +59,11 @@ public class FileHelpers {
         return createTempFile(fileName, AUDIO_EXT, storageDir);
     }
 
-
+    public static File createProductVoiceFile(Context ctx, UUID uniqueId) {
+        File[] files = getProductVoiceFiles(ctx, uniqueId);
+        int idx = files.length + 1;
+        return new File(getProductVoicesDir(ctx, uniqueId), getProductVoiceName(idx));
+    }
 
 
 
@@ -90,6 +95,25 @@ public class FileHelpers {
         return listFiles(dir, filter);
     }
 
+    public static File[] getProductImageFiles(Context ctx, UUID productUUID, ImgSize size) {
+        File dir = getProductImageDir(ctx, productUUID, size);
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return true;
+            }
+        };
+        return listFiles(dir, filter);
+    }
+
+    public static File[] getProductVoiceFiles(Context ctx, UUID productUUID) {
+        File dir = getProductVoicesDir(ctx, productUUID);
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return true;
+            }
+        };
+        return listFiles(dir, filter);
+    }
 
     private static File[] listFiles(File dir, FilenameFilter filter) {
         if (dir.isDirectory() == false) {
@@ -337,4 +361,7 @@ public class FileHelpers {
             f.delete();
         }
     }
+
+
+
 }

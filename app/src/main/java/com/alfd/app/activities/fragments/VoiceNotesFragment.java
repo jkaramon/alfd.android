@@ -71,7 +71,7 @@ public class VoiceNotesFragment extends Fragment {
 
         }
         adapter = new VoiceNotesAdapter(getActivity());
-        updateNotesList();
+
     }
 
     private void updateNotesList() {
@@ -83,6 +83,7 @@ public class VoiceNotesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        updateNotesList();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_voice_notes, container, false);
         gridView = (GridView)view.findViewById(R.id.grid_view);
@@ -277,7 +278,6 @@ public class VoiceNotesFragment extends Fragment {
         public void onVoiceNoteRecorded();
         public File createVoiceNoteFile();
         public File[] getVoiceNoteFiles();
-
         void deleteNote(File file);
     }
 

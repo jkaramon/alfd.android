@@ -2,7 +2,6 @@ package com.alfd.app.activities.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,14 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.alfd.app.ImgSize;
 import com.alfd.app.R;
 import com.alfd.app.RequestCodes;
 import com.alfd.app.SC;
 import com.alfd.app.intents.IntentFactory;
 import com.alfd.app.interfaces.OnPhotoInteractionListener;
-import com.alfd.app.utils.ImageLoader;
 import com.alfd.app.utils.ImageResizer;
-import com.alfd.app.views.RecyclingImageView;
 
 import java.io.File;
 
@@ -58,7 +56,7 @@ public class ProductFullPhotoFragment extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imageType = getArguments().getString(SC.IMAGE_TYPE);
-        imageWorker = new ImageResizer(this.getActivity(), 640, 480);
+        imageWorker = new ImageResizer(this.getActivity(), ImgSize.LARGE);
         fillImageFile(savedInstanceState);
 
     }
@@ -136,7 +134,7 @@ public class ProductFullPhotoFragment extends Fragment implements View.OnClickLi
     }
 
     private void takePicture() {
-        IntentFactory.takePicture(this, listener.getFileToSave(imageType));
+        IntentFactory.takePicture(this, listener.getTempFileToSave(imageType));
     }
 
     @Override

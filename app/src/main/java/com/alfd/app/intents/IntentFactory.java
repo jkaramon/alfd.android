@@ -9,7 +9,9 @@ import android.support.v4.app.Fragment;
 
 import com.alfd.app.RequestCodes;
 import com.alfd.app.SC;
+import com.alfd.app.activities.MainActivity;
 import com.alfd.app.activities.NewProductActivity;
+import com.alfd.app.activities.ProductDetailActivity;
 import com.alfd.app.data.Product;
 
 import java.io.File;
@@ -20,6 +22,12 @@ public class IntentFactory {
         Intent i = new Intent(activity, NewProductActivity.class);
         i.putExtra(SC.BAR_CODE, p.BarCode);
         i.putExtra(SC.BAR_TYPE, p.BarType);
+        return i;
+    }
+
+    public static Intent navigateProduct(MainActivity activity, Product p) {
+        Intent i = new Intent(activity, ProductDetailActivity.class);
+        i.putExtra(SC.PRODUCT_ID, p.getId());
         return i;
     }
 
@@ -48,5 +56,6 @@ public class IntentFactory {
         return i;
 
     }
+
 
 }

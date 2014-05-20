@@ -2,7 +2,6 @@ package com.alfd.app.activities.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -101,7 +100,7 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
     }
 
     private void takePicture() {
-        IntentFactory.takePicture(this, listener.getFileToSave(imageType));
+        IntentFactory.takePicture(this, listener.getTempFileToSave(imageType));
     }
 
     @Override

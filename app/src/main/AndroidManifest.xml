@@ -46,6 +46,10 @@
             android:label="@string/title_activity_image_detail"
         >
         </activity>
+        <activity
+            android:name=".activities.ProductDetailActivity"
+            >
+        </activity>
     </application>
 
 </manifest>

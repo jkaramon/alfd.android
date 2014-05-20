@@ -1,10 +1,10 @@
 <resources>
 
-    <color name="primary">#628C62</color>
-    <color name="primary_lighter">#89C48A</color>
-    <color name="primary_light">#B3FFB3</color>
-    <color name="primary_darker">#3E593F</color>
-    <color name="primary_dark">#1B261B</color>
+    <color name="primary">#829953</color>
+    <color name="primary_lighter">#ADCC6E</color>
+    <color name="primary_light">#D9FF8A</color>
+    <color name="primary_darker">#576637</color>
+    <color name="primary_dark">#2B331C</color>
     <color name="white">#FFFFFF</color>
     <color name="gray_lighter">#DDDDDD</color>
     <color name="gray_light">#AEAEAE</color>
@@ -78,6 +78,10 @@
     <style name="hero_text">
         <item name="android:textSize">@dimen/text_xlarge</item>
         <item name="android:padding">10dp</item>
+    </style>
+    <style name="header_text">
+        <item name="android:textSize">@dimen/text_xlarge</item>
+        <item name="android:layout_margin">@dimen/margin_large</item>
     </style>
     <style name="hero_text_highlighted" parent="hero_text">
         <item name="android:textStyle">bold</item>
