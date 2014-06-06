@@ -1,5 +1,7 @@
 package com.alfd.app.activities;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.view.MenuItem;
 
 import com.alfd.app.ProductImageTypes;
 import com.alfd.app.R;
+import com.alfd.app.RequestCodes;
 import com.alfd.app.activities.fragments.ProductGalleryPhotoFragment;
 import com.alfd.app.activities.fragments.ProductNameFragment;
 import com.alfd.app.activities.fragments.ProductPlaceholderPhotoFragment;
@@ -20,6 +23,8 @@ import java.util.List;
 
 public class NewProductActivity extends BaseProductActivity  {
     private NewProductPageAdapter pageAdapter;
+    private List<Fragment> fragments;
+    private String[] titles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,16 +32,21 @@ public class NewProductActivity extends BaseProductActivity  {
         setContentView(R.layout.activity_new_product);
 
 
-        List<Fragment> fragments = getFragments();
-        String[] titles = getResources().getStringArray(R.array.new_product_pages);
+        titles = getResources().getStringArray(R.array.new_product_pages);
+        initFragments();
+
+
+
+
+
+    }
+
+    private void initFragments() {
+        pageAdapter = null;
+        fragments = getFragments();
         pageAdapter = new NewProductPageAdapter(getSupportFragmentManager(), fragments, titles);
         ViewPager pager = (ViewPager)findViewById(R.id.view_pager);
         pager.setAdapter(pageAdapter);
-
-
-
-
-
     }
 
     private List<Fragment> getFragments() {
@@ -83,6 +93,13 @@ public class NewProductActivity extends BaseProductActivity  {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == RequestCodes.IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            recreate();
+
+        }
+    }
 
 
 

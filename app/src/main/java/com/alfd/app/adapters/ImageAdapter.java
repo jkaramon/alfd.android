@@ -28,6 +28,9 @@ public class ImageAdapter extends BaseAdapter {
     private ImageResizer imageWorker;
     private GridView.LayoutParams imageViewLayoutParams;
     private File[] imageFiles;
+
+
+
     public ImageAdapter(Context context, ImageResizer imageWorker, File[] imageFiles) {
         super();
         this.imageWorker = imageWorker;
@@ -35,6 +38,7 @@ public class ImageAdapter extends BaseAdapter {
         this.imageFiles = imageFiles;
         imageViewLayoutParams = new GridView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
         // Calculate ActionBar height
         TypedValue tv = new TypedValue();
         if (context.getTheme().resolveAttribute(
@@ -42,6 +46,10 @@ public class ImageAdapter extends BaseAdapter {
             actionBarHeight = TypedValue.complexToDimensionPixelSize(
                     tv.data, context.getResources().getDisplayMetrics());
         }
+    }
+
+    public void setFiles(File[] imageFiles) {
+        this.imageFiles = imageFiles;
     }
 
     @Override

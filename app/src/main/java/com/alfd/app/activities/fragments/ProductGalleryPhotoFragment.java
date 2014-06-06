@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 
 import com.alfd.app.BuildConfig;
@@ -22,6 +23,7 @@ import com.alfd.app.R;
 import com.alfd.app.SC;
 import com.alfd.app.activities.ProductFullScreenActivity;
 import com.alfd.app.adapters.ImageAdapter;
+import com.alfd.app.intents.IntentFactory;
 import com.alfd.app.interfaces.OnPhotoInteractionListener;
 import com.alfd.app.utils.ImageCache;
 import com.alfd.app.utils.ImageResizer;
@@ -41,6 +43,7 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
     private int imageThumbSpacing;
     private ImageAdapter adapter;
     private ImageResizer imageWorker;
+    private Button addPhotoButton;
 
     private OnPhotoInteractionListener listener;
 
@@ -89,8 +92,16 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
 
         final View v = inflater.inflate(R.layout.fragment_product_gallery_photo, container, false);
         final GridView mGridView = (GridView) v.findViewById(R.id.gridView);
+        addPhotoButton = (Button)v.findViewById(R.id.add_photo);
         mGridView.setAdapter(adapter);
         mGridView.setOnItemClickListener(this);
+        final Activity activity = this.getActivity();
+        addPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                IntentFactory.takePicture(activity, listener.getTempFileToSave(imageType));
+            }
+        });
         mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int scrollState) {

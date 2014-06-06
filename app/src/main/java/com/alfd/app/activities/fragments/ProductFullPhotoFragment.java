@@ -134,7 +134,7 @@ public class ProductFullPhotoFragment extends Fragment implements View.OnClickLi
     }
 
     private void takePicture() {
-        IntentFactory.takePicture(this, listener.getTempFileToSave(imageType));
+        IntentFactory.takePicture(this.getActivity(), listener.getTempFileToSave(imageType));
     }
 
     @Override

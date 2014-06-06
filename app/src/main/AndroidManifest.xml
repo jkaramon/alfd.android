@@ -4,15 +4,18 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="11" />
+    <uses-sdk android:minSdkVersion="14" />
 
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:name="com.alfd.app.AlfdApplication"
         android:label="@string/app_name"
@@ -28,7 +31,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.ScanActivity" />
+        <activity
+            android:name="com.alfd.app.activities.ScanActivity"
+            android:theme="@style/FullscreenTheme" />
 
         <meta-data
             android:name="AA_DB_NAME"
@@ -38,17 +43,20 @@
             android:value="1" />
 
         <activity
-            android:name=".activities.NewProductActivity"
+            android:name="com.alfd.app.activities.NewProductActivity"
             android:label="@string/title_activity_new_product" >
         </activity>
         <activity
-            android:name=".activities.ProductFullScreenActivity"
-            android:label="@string/title_activity_image_detail"
-        >
+            android:name="com.alfd.app.activities.ProductFullScreenActivity"
+            android:label="@string/title_activity_image_detail" >
+        </activity>
+        <activity android:name="com.alfd.app.activities.ProductDetailActivity" >
         </activity>
         <activity
-            android:name=".activities.ProductDetailActivity"
-            >
+            android:name="com.alfd.app.activities.TakePictureActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_take_picture"
+            android:theme="@style/FullscreenTheme" >
         </activity>
     </application>
 

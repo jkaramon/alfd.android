@@ -28,10 +28,9 @@ public class HomeFragment extends Fragment {
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static HomeFragment newInstance(int sectionNumber) {
+    public static HomeFragment newInstance() {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,10 +56,5 @@ public class HomeFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        ((MainActivity) activity).onSectionAttached(
-                getArguments().getInt(ARG_SECTION_NUMBER));
-    }
+
 }

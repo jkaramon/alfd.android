@@ -11,15 +11,13 @@ import com.alfd.app.views.CameraPreview;
 import com.alfd.app.R;
 import com.alfd.app.ScanIntentResult;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.media.CameraProfile;
 import android.os.Bundle;
 import android.os.Handler;
 
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,14 +41,12 @@ import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 import net.sourceforge.zbar.Config;
 
-public class ScanActivity extends BaseActionBarActivity
+public class ScanActivity extends Activity
 {
     private Camera mCamera;
     private CameraPreview mPreview;
     private Handler autoFocusHandler;
 
-    TextView scanText;
-    Button scanButton;
 
     ImageScanner scanner;
 
@@ -64,7 +60,7 @@ public class ScanActivity extends BaseActionBarActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.main);
+        setContentView(R.layout.activity_scan);
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
@@ -80,22 +76,7 @@ public class ScanActivity extends BaseActionBarActivity
         FrameLayout preview = (FrameLayout)findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
 
-        scanText = (TextView)findViewById(R.id.scanText);
 
-        scanButton = (Button)findViewById(R.id.ScanButton);
-
-        scanButton.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    if (barcodeScanned) {
-                        barcodeScanned = false;
-                        scanText.setText("Scanning...");
-                        mCamera.setPreviewCallback(previewCb);
-                        mCamera.startPreview();
-                        previewing = true;
-                        mCamera.autoFocus(autoFocusCB);
-                    }
-                }
-            });
     }
 
     public void onPause() {
@@ -104,7 +85,7 @@ public class ScanActivity extends BaseActionBarActivity
     }
 
     public void restoreActionBar() {
-        ActionBar actionBar = getSupportActionBar();
+        ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);

@@ -47,6 +47,6 @@
             android:text="Insert"
             android:id="@+id/btn_insert"
             android:layout_gravity="center_horizontal"
-            style="@style/button_primary" />
+            style="@style/primary_button" />
     </LinearLayout>
 </FrameLayout>

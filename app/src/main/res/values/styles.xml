@@ -1,91 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="primary">#829953</color>
-    <color name="primary_lighter">#ADCC6E</color>
-    <color name="primary_light">#D9FF8A</color>
-    <color name="primary_darker">#576637</color>
-    <color name="primary_dark">#2B331C</color>
-    <color name="white">#FFFFFF</color>
-    <color name="gray_lighter">#DDDDDD</color>
-    <color name="gray_light">#AEAEAE</color>
-    <color name="gray">#8D8D8D</color>
-    <color name="gray_darker">#6D6D6D</color>
-    <color name="gray_dark">#353535</color>
-    <color name="black">#000000</color>
-    <color name="red">#ff0000</color>
 
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="@style/Theme.AppCompat.Light">
         <item name="android:buttonStyle">@style/default_button</item>
-        <item name="actionBarStyle">@style/MyActionBar</item>
         <item name="android:actionBarStyle">@style/MyActionBar</item>
         <item name="android:windowBackground">@color/white</item>
         <item name="android:textViewStyle">@style/my_text_view</item>
     </style>
 
-
     <style name="my_text_view" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/gray</item>
     </style>
+
     <style name="large_text_view" parent="my_text_view">
         <item name="android:textSize">22sp</item>
     </style>
 
-    <style name="MyActionBar"
-        parent="@style/Widget.AppCompat.ActionBar">
+    <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@color/primary</item>
-        <item name="background">@color/primary</item>
         <item name="android:titleTextStyle">@style/action_bar_title</item>
-        <item name="titleTextStyle">@style/action_bar_title</item>
-        <item name="actionBarItemBackground">@color/primary</item>
     </style>
 
-    <style name="action_bar_title" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <style name="action_bar_title" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/white</item>
     </style>
-   
 
     <style name="default_button">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:gravity" >center</item>
-        <item name="android:background">@color/primary</item>
+        <item name="android:textColor">@color/button_text</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button_bg</item>
     </style>
 
     <style name="primary_button" parent="default_button">
         <item name="android:padding">@dimen/button_padding</item>
     </style>
 
-
-
     <style name="primary_button_large" parent="primary_button">
         <item name="android:textSize">@dimen/text_xxlarge</item>
     </style>
 
     <style name="button_home_scan">
-        <item name="android:layout_width" >144dp</item>
-        <item name="android:layout_height" >96dp</item>
-        <item name="android:layout_margin" >@dimen/button_margin</item>
-        <item name="android:padding" >@dimen/button_padding</item>
-
-        <item name="android:textSize" >@dimen/text_large</item>
+        <item name="android:layout_width">144dp</item>
+        <item name="android:layout_height">96dp</item>
+        <item name="android:layout_margin">@dimen/button_margin</item>
+        <item name="android:padding">@dimen/button_padding</item>
+        <item name="android:textSize">@dimen/text_large</item>
         <item name="android:drawableBottom">@drawable/barcode</item>
         <item name="android:drawablePadding">24dp</item>
     </style>
 
-    <style name="button_primary" >
-    </style>
+    <style name="button_primary"></style>
+
     <style name="hero_text">
         <item name="android:textSize">@dimen/text_xlarge</item>
         <item name="android:padding">10dp</item>
     </style>
+
     <style name="header_text">
         <item name="android:textSize">@dimen/text_xlarge</item>
         <item name="android:layout_margin">@dimen/margin_large</item>
     </style>
+
     <style name="hero_text_highlighted" parent="hero_text">
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="header_placeholder_text">
         <item name="android:padding">5dp</item>
         <item name="android:textColor">@color/gray_lighter</item>
@@ -99,6 +80,12 @@
     <style name="media_button">
         <item name="android:padding">10dp</item>
     </style>
+
+    <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
 
 
 </resources>

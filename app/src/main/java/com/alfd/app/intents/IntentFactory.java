@@ -12,6 +12,7 @@ import com.alfd.app.SC;
 import com.alfd.app.activities.MainActivity;
 import com.alfd.app.activities.NewProductActivity;
 import com.alfd.app.activities.ProductDetailActivity;
+import com.alfd.app.activities.TakePictureActivity;
 import com.alfd.app.data.Product;
 
 import java.io.File;
@@ -35,16 +36,13 @@ public class IntentFactory {
         return takePicture(activity, null, file);
     }
 
-    public static Intent takePicture(Fragment fragment, File file) {
-        return takePicture(fragment.getActivity(), fragment, file);
 
-    }
 
     private static Intent takePicture(Activity activity, Fragment fragment, File file) {
-        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent i = new Intent(activity, TakePictureActivity.class);
         if (i.resolveActivity(activity.getPackageManager()) != null) {
             if (file != null) {
-                i.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+                i.putExtra(SC.IMAGE_FULL_NAME, file.getAbsolutePath());
             }
             if (fragment == null) {
                 activity.startActivityForResult(i, RequestCodes.IMAGE_CAPTURE);
