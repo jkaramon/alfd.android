@@ -75,7 +75,7 @@ public class Product extends BaseServerModel {
 
 
     public File getPrimaryPhoto(Context ctx) {
-        File[] files = FileHelpers.getProductImageFiles(ctx, UniqueId, ImgSize.LARGE);
+        File[] files = FileHelpers.getProductImageFiles(ctx, BarCode, BarType, ImgSize.LARGE);
         if (files.length > 0) {
             return files[0];
         }
@@ -83,7 +83,7 @@ public class Product extends BaseServerModel {
     }
 
     public File[] getVoiceNotes(Context ctx) {
-        return FileHelpers.getProductVoiceFiles(ctx, UniqueId);
+        return FileHelpers.getProductVoiceFiles(ctx, BarCode, BarType);
     }
 
 
@@ -102,20 +102,20 @@ public class Product extends BaseServerModel {
     }
 
     private void moveTempVoiceNotesToProductDir(Context ctx) {
-        FileHelpers.moveTempVoiceNotesToProductDir(ctx, UniqueId, BarCode);
+        FileHelpers.moveTempVoiceNotesToProductDir(ctx, BarCode, BarType);
     }
 
     private void createProductImages(Context ctx) {
-        FileHelpers.createProductImagesFromTempImages(ctx, UniqueId, BarCode);
+        FileHelpers.createProductImagesFromTempImages(ctx, BarCode, BarType);
 
     }
 
     private void copyTempVoicesToSync(Context ctx) {
-        FileHelpers.copyTempVoicesToSync(ctx, UniqueId, BarCode);
+        FileHelpers.copyTempVoicesToSync(ctx, BarCode, BarType);
     }
 
     private void copyTempImagesToSync(Context ctx) {
-        FileHelpers.copyTempImagesToSync(ctx, UniqueId, BarCode);
+        FileHelpers.copyTempImagesToSync(ctx, BarCode, BarType);
     }
 
 

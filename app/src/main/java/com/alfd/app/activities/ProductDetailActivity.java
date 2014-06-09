@@ -52,7 +52,7 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
     private List<Fragment> getFragments() {
         List<Fragment> fragments = new ArrayList<Fragment>();
         fragments.add(ProductInfoFragment.newInstance());
-        FileHelpers.getProductImageFiles(this, product.UniqueId, ImgSize.LARGE);
+        FileHelpers.getProductImageFiles(this, product.BarCode, product.BarType, ImgSize.LARGE);
 
        // TODO: fragments.add(ProductFullPhotoFragment.newInstance())
         return fragments;

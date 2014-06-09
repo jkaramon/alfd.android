@@ -12,6 +12,7 @@ import com.alfd.app.ProductImageTypes;
 import com.alfd.app.R;
 import com.alfd.app.RequestCodes;
 import com.alfd.app.activities.fragments.ProductGalleryPhotoFragment;
+import com.alfd.app.activities.fragments.ProductInfoFragment;
 import com.alfd.app.activities.fragments.ProductNameFragment;
 import com.alfd.app.activities.fragments.ProductPlaceholderPhotoFragment;
 import com.alfd.app.activities.fragments.VoiceNotesFragment;
@@ -19,9 +20,11 @@ import com.alfd.app.adapters.NewProductPageAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class NewProductActivity extends BaseProductActivity  {
+
     private NewProductPageAdapter pageAdapter;
     private List<Fragment> fragments;
     private String[] titles;
@@ -43,20 +46,17 @@ public class NewProductActivity extends BaseProductActivity  {
 
     private void initFragments() {
         pageAdapter = null;
-        fragments = getFragments();
-        pageAdapter = new NewProductPageAdapter(getSupportFragmentManager(), fragments, titles);
-        ViewPager pager = (ViewPager)findViewById(R.id.view_pager);
-        pager.setAdapter(pageAdapter);
-    }
-
-    private List<Fragment> getFragments() {
-        List<Fragment> fragments = new ArrayList<Fragment>();
+        fragments = new ArrayList<Fragment>() {};
         fragments.add(getProductPhotoFragment(ProductImageTypes.OVERVIEW));
         fragments.add(getProductPhotoFragment(ProductImageTypes.INGREDIENTS));
         fragments.add(VoiceNotesFragment.newInstance());
         fragments.add(ProductNameFragment.newInstance());
-        return fragments;
+        pageAdapter = new NewProductPageAdapter(getSupportFragmentManager(),fragments, titles);
+        ViewPager pager = (ViewPager)findViewById(R.id.view_pager);
+        pager.setAdapter(pageAdapter);
     }
+
+
 
     private Fragment getProductPhotoFragment(String imageType) {
         File[] imageFiles = getImageFiles(imageType);
@@ -96,7 +96,16 @@ public class NewProductActivity extends BaseProductActivity  {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RequestCodes.IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
-            recreate();
+            String sourceFragmentKey = data.getStringExtra("source");
+            //if (sourceFragmentKey == ProductImageTypes.OVERVIEW) {
+                fragments.set(0, getProductPhotoFragment(ProductImageTypes.OVERVIEW));
+            //}
+            //if (sourceFragmentKey == ProductImageTypes.INGREDIENTS) {
+                fragments.set(1, getProductPhotoFragment(ProductImageTypes.INGREDIENTS));
+            //}
+            pageAdapter.notifyDataSetChanged();
+
+
 
         }
     }

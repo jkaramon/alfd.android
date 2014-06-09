@@ -1,10 +1,8 @@
 package com.alfd.app.adapters;
 
 import android.content.Context;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -22,9 +20,6 @@ import java.io.File;
 public class ImageAdapter extends BaseAdapter {
 
     private final Context context;
-    private int itemHeight = 0;
-    private int numColumns = 0;
-    private int actionBarHeight = 0;
     private ImageResizer imageWorker;
     private GridView.LayoutParams imageViewLayoutParams;
     private File[] imageFiles;
@@ -35,29 +30,19 @@ public class ImageAdapter extends BaseAdapter {
         super();
         this.imageWorker = imageWorker;
         this.context = context;
-        this.imageFiles = imageFiles;
+        this.setImageFiles(imageFiles);
         imageViewLayoutParams = new GridView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        // Calculate ActionBar height
-        TypedValue tv = new TypedValue();
-        if (context.getTheme().resolveAttribute(
-                android.R.attr.actionBarSize, tv, true)) {
-            actionBarHeight = TypedValue.complexToDimensionPixelSize(
-                    tv.data, context.getResources().getDisplayMetrics());
-        }
+
     }
 
-    public void setFiles(File[] imageFiles) {
-        this.imageFiles = imageFiles;
-    }
+
+
 
     @Override
     public int getCount() {
-        // If columns have yet to be determined, return no items
-        if (getNumColumns() == 0) {
-            return 0;
-        }
+
         return imageFiles.length;
     }
 
@@ -88,7 +73,7 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup container) {
-        // Now handle the main ImageView thumbnails
+
         ImageView imageView;
         if (convertView == null) { // if it's not recycled, instantiate and initialize
             imageView = new RecyclingImageView(context);
@@ -97,40 +82,13 @@ public class ImageAdapter extends BaseAdapter {
         } else { // Otherwise re-use the converted view
             imageView = (ImageView) convertView;
         }
-        // Check the height matches our calculated column width
-        if (imageView.getLayoutParams().height != itemHeight) {
-            imageView.setLayoutParams(imageViewLayoutParams);
-        }
 
-        // Finally load the image asynchronously into the ImageView, this also takes care of
-        // setting a placeholder image while the background thread runs
         imageWorker.loadImage(getItem(position), imageView);
         return imageView;
-        //END_INCLUDE(load_gridview_item)
+
     }
 
-    /**
-     * Sets the item height. Useful for when we know the column width so the height can be set
-     * to match.
-     *
-     * @param height
-     */
-    public void setItemHeight(int height) {
-        if (height == itemHeight) {
-            return;
-        }
-        itemHeight = height;
-        imageViewLayoutParams =
-                new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, itemHeight);
-        imageWorker.setImageSize(height);
-        notifyDataSetChanged();
-    }
-
-    public void setNumColumns(int numColumns) {
-        this.numColumns = numColumns;
-    }
-
-    public int getNumColumns() {
-        return numColumns;
+    public void setImageFiles(File[] imageFiles) {
+        this.imageFiles = imageFiles;
     }
 }

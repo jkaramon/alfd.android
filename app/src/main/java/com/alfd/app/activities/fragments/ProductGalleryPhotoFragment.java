@@ -16,22 +16,26 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.Toast;
 
 import com.alfd.app.BuildConfig;
 import com.alfd.app.ImgSize;
+import com.alfd.app.ProductImageTypes;
 import com.alfd.app.R;
 import com.alfd.app.SC;
 import com.alfd.app.activities.ProductFullScreenActivity;
 import com.alfd.app.adapters.ImageAdapter;
 import com.alfd.app.intents.IntentFactory;
 import com.alfd.app.interfaces.OnPhotoInteractionListener;
+import com.alfd.app.interfaces.OnPhotoTaken;
+import com.alfd.app.utils.FileHelpers;
 import com.alfd.app.utils.ImageCache;
 import com.alfd.app.utils.ImageResizer;
 import com.alfd.app.utils.Utils;
 
 import java.io.File;
 
-public class ProductGalleryPhotoFragment extends Fragment implements AdapterView.OnItemClickListener   {
+public class ProductGalleryPhotoFragment extends Fragment implements AdapterView.OnItemClickListener, OnPhotoTaken {
 
 
     private static final String TAG = "ImageGridFragment";
@@ -78,12 +82,7 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
         imageWorker = new ImageResizer(getActivity(), ImgSize.THUMB);
         imageWorker.setLoadingImage(R.drawable.empty_photo);
         imageWorker.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
-
-        adapter = new ImageAdapter(getActivity(), imageWorker,listener.getImageFiles(imageType));
-
-
-
-
+        adapter = new ImageAdapter(getActivity(), imageWorker, listener.getImageFiles(imageType));
     }
 
     @Override
@@ -96,63 +95,27 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
         mGridView.setAdapter(adapter);
         mGridView.setOnItemClickListener(this);
         final Activity activity = this.getActivity();
+        mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                File f = (File)adapter.getItem(position);
+                boolean deleted = FileHelpers.deleteFile(f);
+                if (deleted) {
+                    Toast.makeText(activity, "File deleted", Toast.LENGTH_SHORT).show();
+                }
+                adapter.setImageFiles(listener.getImageFiles(imageType));
+                adapter.notifyDataSetChanged();
+
+                return true;
+            }
+        });
         addPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                IntentFactory.takePicture(activity, listener.getTempFileToSave(imageType));
-            }
-        });
-        mGridView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-                // Pause fetcher to ensure smoother scrolling when flinging
-                if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_FLING) {
-                    // Before Honeycomb pause image loading on scroll to help with performance
-                    if (!Utils.hasHoneycomb()) {
-                        imageWorker.setPauseWork(true);
-                    }
-                } else {
-                    imageWorker.setPauseWork(false);
-                }
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int firstVisibleItem,
-                                 int visibleItemCount, int totalItemCount) {
+                IntentFactory.takePicture(activity, imageType, listener.getTempFileToSave(imageType));
             }
         });
 
-        // This listener is used to get the final width of the GridView and then calculate the
-        // number of columns and the width of each column. The width of each column is variable
-        // as the GridView has stretchMode=columnWidth. The column width is used to set the height
-        // of each view so we get nice square thumbnails.
-        mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    @Override
-                    public void onGlobalLayout() {
-                        if (adapter.getNumColumns() == 0) {
-                            final int numColumns = (int) Math.floor(
-                                    mGridView.getWidth() / (imageThumbSize + imageThumbSpacing));
-                            if (numColumns > 0) {
-                                final int columnWidth =
-                                        (mGridView.getWidth() / numColumns) - imageThumbSpacing;
-                                adapter.setNumColumns(numColumns);
-                                adapter.setItemHeight(columnWidth);
-                                if (BuildConfig.DEBUG) {
-                                    Log.d(TAG, "onCreateView - numColumns set to " + numColumns);
-                                }
-                                if (Utils.hasJellyBean()) {
-                                    mGridView.getViewTreeObserver()
-                                            .removeOnGlobalLayoutListener(this);
-                                } else {
-                                    mGridView.getViewTreeObserver()
-                                            .removeGlobalOnLayoutListener(this);
-                                }
-                            }
-                        }
-                    }
-                });
 
         return v;
     }
@@ -200,9 +163,6 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
         File f = (File)adapter.getItem(position);
         ActivityOptions options = null;
         if (Utils.hasJellyBean()) {
-            // makeThumbnailScaleUpAnimation() looks kind of ugly here as the loading spinner may
-            // show plus the thumbnail image in GridView is cropped. so using
-            // makeScaleUpAnimation() instead.
             options = ActivityOptions.makeScaleUpAnimation(v, 0, 0, v.getWidth(), v.getHeight());
         }
         listener.showFullScreenDetail(f, options);
@@ -210,5 +170,8 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
 
 
 
+    @Override
+    public void photoTaken(Intent data) {
 
+    }
 }

@@ -3,37 +3,28 @@ package com.alfd.app.activities;
 import com.alfd.app.SC;
 import com.alfd.app.activities.util.SystemUiHider;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.alfd.app.R;
-import com.alfd.app.utils.FileHelpers;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -160,7 +151,7 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
     @Override
     public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
         setCameraDisplayOrientation(0, camera);
-        setBestPictureSize();
+        setCameraParams();
         camera.startPreview();
         // sets what code should be executed after the picture is taken
         pictureCallback = new Camera.PictureCallback() {
@@ -183,9 +174,11 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
         finish();
     }
 
-    private void setBestPictureSize() {
+    private void setCameraParams() {
 
         Camera.Parameters params =  camera.getParameters();
+        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+
         imageSize = null;
         int minSize = 1600;
         for (Camera.Size size : params.getSupportedPictureSizes()) {

@@ -32,24 +32,19 @@ public class IntentFactory {
         return i;
     }
 
-    public static Intent takePicture(Activity activity, File file) {
-        return takePicture(activity, null, file);
-    }
 
 
 
-    private static Intent takePicture(Activity activity, Fragment fragment, File file) {
+
+    public static Intent takePicture(Activity activity, String sourceTag, File file) {
         Intent i = new Intent(activity, TakePictureActivity.class);
+        i.putExtra("source", sourceTag);
         if (i.resolveActivity(activity.getPackageManager()) != null) {
             if (file != null) {
                 i.putExtra(SC.IMAGE_FULL_NAME, file.getAbsolutePath());
             }
-            if (fragment == null) {
-                activity.startActivityForResult(i, RequestCodes.IMAGE_CAPTURE);
-            }
-            else {
-                fragment.startActivityForResult(i, RequestCodes.IMAGE_CAPTURE);
-            }
+            activity.startActivityForResult(i, RequestCodes.IMAGE_CAPTURE);
+
         }
         return i;
 

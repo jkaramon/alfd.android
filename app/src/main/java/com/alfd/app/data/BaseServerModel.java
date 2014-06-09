@@ -8,16 +8,13 @@ import java.util.UUID;
 
 public abstract class BaseServerModel extends BaseModel {
     @Column
-    public UUID UniqueId;
+    public String ServerId;
     @Column
     public int ServerTimestamp = -1;
 
     @Override
     protected void beforeSave() {
         super.beforeSave();
-        if (UniqueId == null && isNew()) {
-            UniqueId = UUID.randomUUID();
-        }
     }
 
 

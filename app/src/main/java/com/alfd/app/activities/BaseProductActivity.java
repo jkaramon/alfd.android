@@ -72,13 +72,13 @@ public class BaseProductActivity extends BaseActionBarActivity implements OnPhot
 
     @Override
     public File getTempFileToSave(String imageType) {
-        return FileHelpers.createTempProductImageFile(this, imageType, product.BarCode);
+        return FileHelpers.createTempProductImageFile(this, imageType, product.BarCode, product.BarType);
     }
 
     @Override
     public File[] getImageFiles(String imageType) {
         if (product.isNew()) {
-            return FileHelpers.getProductImageTempFiles(this, imageType, product.BarCode);
+            return FileHelpers.getProductImageTempFiles(this, imageType, product.BarCode, product.BarType);
         }
         else {
             // TODO: Implement!
@@ -113,17 +113,17 @@ public class BaseProductActivity extends BaseActionBarActivity implements OnPhot
     @Override
     public File createVoiceNoteFile() {
         if (product.isNew()) {
-            return FileHelpers.createTempProductVoiceFile(this, product.BarCode);
+            return FileHelpers.createTempProductVoiceFile(this, product.BarCode, product.BarType);
         }
         else {
-            return FileHelpers.createProductVoiceFile(this, product.UniqueId);
+            return FileHelpers.getProductVoiceFile(this, product.BarCode, product.BarType);
         }
     }
 
     @Override
     public File[] getVoiceNoteFiles() {
         if (product.isNew()) {
-            return FileHelpers.getProductVoiceTempFiles(this, product.BarCode);
+            return FileHelpers.getProductVoiceTempFiles(this, product.BarCode, product.BarType);
         }
         else {
             // TODO: Implement!

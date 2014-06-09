@@ -101,8 +101,9 @@ public class ProductPlaceholderPhotoFragment extends Fragment implements View.On
 
     private void takePicture() {
 
-        IntentFactory.takePicture(this.getActivity(), listener.getTempFileToSave(imageType));
+        IntentFactory.takePicture(this.getActivity(), imageType, listener.getTempFileToSave(imageType));
     }
+
 
 
 
