@@ -274,7 +274,6 @@ public abstract class ImageWorker {
             // the cache
             if (mImageCache != null && !isCancelled() && getAttachedImageView() != null
                     && !mExitTasksEarly) {
-                bitmap = mImageCache.getBitmapFromDiskCache(dataString);
             }
 
             // If the bitmap was not found in the cache and this task has not been cancelled by
@@ -433,9 +432,7 @@ public abstract class ImageWorker {
                 case MESSAGE_CLEAR:
                     clearCacheInternal();
                     break;
-                case MESSAGE_INIT_DISK_CACHE:
-                    initDiskCacheInternal();
-                    break;
+
                 case MESSAGE_FLUSH:
                     flushCacheInternal();
                     break;
@@ -447,11 +444,7 @@ public abstract class ImageWorker {
         }
     }
 
-    protected void initDiskCacheInternal() {
-        if (mImageCache != null) {
-            mImageCache.initDiskCache();
-        }
-    }
+
 
     protected void clearCacheInternal() {
         if (mImageCache != null) {

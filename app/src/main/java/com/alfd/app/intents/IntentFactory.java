@@ -26,8 +26,8 @@ public class IntentFactory {
         return i;
     }
 
-    public static Intent navigateProduct(MainActivity activity, Product p) {
-        Intent i = new Intent(activity, ProductDetailActivity.class);
+    public static Intent navigateProduct(Context context, Product p) {
+        Intent i = new Intent(context, ProductDetailActivity.class);
         i.putExtra(SC.PRODUCT_ID, p.getId());
         return i;
     }
@@ -51,4 +51,6 @@ public class IntentFactory {
     }
 
 
+    public static void takeProductPicture(Activity activity, String barCode, String barType, String overview) {
+    }
 }

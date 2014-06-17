@@ -21,6 +21,16 @@ android {
     compileSdkVersion 19
     buildToolsVersion "19.0.3"
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 19
@@ -39,6 +49,8 @@ repositories {
     mavenCentral()
 }
 dependencies {
+    compile 'com.octo.android.robospice:robospice-retrofit:1.4.12'
+    compile 'com.octo.android.robospice:robospice:1.4.12'
     compile 'com.android.support:support-v4:19.0.1'
     compile 'com.android.support:appcompat-v7:19.0.1'
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -46,4 +58,6 @@ dependencies {
     compile files('src/main/libs/ormlite-core-4.48.jar')
     compile files('src/main/libs/ormlite-android-4.48.jar')
     compile files('src/main/libs/activeandroid.jar')
+
 }
+

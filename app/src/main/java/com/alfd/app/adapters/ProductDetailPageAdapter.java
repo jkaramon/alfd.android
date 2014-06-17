@@ -13,9 +13,9 @@ import java.util.List;
 public class ProductDetailPageAdapter extends FragmentStatePagerAdapter {
     private List<Fragment> fragments;
     private Activity activity;
-    private String[] titles;
+    private List<String> titles;
 
-    public ProductDetailPageAdapter(FragmentManager fm, List<Fragment> fragments, String[] titles) {
+    public ProductDetailPageAdapter(FragmentManager fm, List<Fragment> fragments, List<String> titles) {
         super(fm);
         this.activity = activity;
         this.fragments = fragments;
@@ -34,6 +34,6 @@ public class ProductDetailPageAdapter extends FragmentStatePagerAdapter {
     // Returns the page title for the top indicator
     @Override
     public CharSequence getPageTitle(int position) {
-        return titles[position];
+        return titles.get(position);
     }
 }

@@ -28,22 +28,20 @@ import java.io.File;
  * create an instance of this fragment.
  *
  */
-public class ProductFullPhotoFragment extends Fragment implements View.OnClickListener  {
+public class ProductFullPhotoFragment extends Fragment  {
 
 
     private ImageView imageView;
-    private String imageType;
     private File imageFile;
     private ImageResizer imageWorker;
 
     private OnPhotoInteractionListener listener;
 
     // TODO: Rename and change types and number of parameters
-    public static ProductFullPhotoFragment newInstance(String imageType, File imageFile) {
+    public static ProductFullPhotoFragment newInstance(File imageFile) {
         ProductFullPhotoFragment fragment = new ProductFullPhotoFragment();
         Bundle args = new Bundle();
         args.putString(SC.IMAGE_FULL_NAME, imageFile.getAbsolutePath());
-        args.putString(SC.IMAGE_TYPE, imageType);
         fragment.setArguments(args);
 
         return fragment;
@@ -55,7 +53,6 @@ public class ProductFullPhotoFragment extends Fragment implements View.OnClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        imageType = getArguments().getString(SC.IMAGE_TYPE);
         imageWorker = new ImageResizer(this.getActivity(), ImgSize.LARGE);
         fillImageFile(savedInstanceState);
 
@@ -128,14 +125,7 @@ public class ProductFullPhotoFragment extends Fragment implements View.OnClickLi
         imageWorker.closeCache();
     }
 
-    @Override
-    public void onClick(View view) {
-        takePicture();
-    }
 
-    private void takePicture() {
-        IntentFactory.takePicture(this.getActivity(), "", listener.getTempFileToSave(imageType));
-    }
 
 
 

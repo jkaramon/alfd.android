@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.alfd.app.ImgSize;
+import com.alfd.app.LogTags;
 import com.alfd.app.R;
 import com.alfd.app.adapters.VoiceNotesAdapter;
 import com.alfd.app.data.Product;
 import com.alfd.app.utils.ImageResizer;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 /**
  * A simple {@link android.support.v4.app.Fragment} subclass.
@@ -60,7 +63,7 @@ public class ProductInfoFragment extends Fragment  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        product = listener.getProduct();
+
         FragmentActivity activity = this.getActivity();
         imageWorker = new ImageResizer(activity, ImgSize.SMALL);
 
@@ -68,13 +71,12 @@ public class ProductInfoFragment extends Fragment  {
 
         }
         FragmentManager fragmentManager = getChildFragmentManager();
-        String tag = "voices";
-        Fragment f = fragmentManager.findFragmentByTag(tag);
+        Fragment f = fragmentManager.findFragmentByTag(VoiceNotesFragment.TAG);
         if (f == null) {
             f = VoiceNotesFragment.newInstance();
         }
         fragmentManager.beginTransaction()
-                .replace(R.id.voice_notes_layout, f, tag)
+                .replace(R.id.voice_notes_layout, f, VoiceNotesFragment.TAG)
                 .commit();
 
     }
@@ -90,13 +92,19 @@ public class ProductInfoFragment extends Fragment  {
         descriptionText = (TextView)view.findViewById(R.id.description_text);
         barCodeText = (TextView)view.findViewById(R.id.bar_code_text);
 
-        bindView();
 
 
         return view;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        bindView();
+    }
+
     private void bindView() {
+        product = listener.getProduct();
         getActivity().setTitle(product.Name);
         descriptionText.setText(product.Description);
         barCodeText.setText(product.getFullBarCodeInfo());
@@ -117,11 +125,27 @@ public class ProductInfoFragment extends Fragment  {
 
     @Override
     public void onDetach() {
+
         super.onDetach();
+        // http://stackoverflow.com/questions/15207305/getting-the-error-java-lang-illegalstateexception-activity-has-been-destroyed
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+
         listener = null;
     }
 
-
+    public VoiceNotesFragment getVoiceNotesFragment() {
+        FragmentManager childFragMan = getChildFragmentManager();
+        return (VoiceNotesFragment)childFragMan.findFragmentByTag(VoiceNotesFragment.TAG);
+    }
 
     public interface OnFragmentInteractionListener {
 

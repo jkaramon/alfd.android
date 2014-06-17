@@ -59,40 +59,39 @@ public class MainActivity extends BaseActionBarActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        barCode = "00018434";
-        barType = "EAN128";
-        renderNonExistingProductFragment();
-        return;
+//        barCode = "8594008352008";
+//        barType = "EAN13";
+//        renderNonExistingProductFragment();
 
 //        Product p = Product.load(Product.class, 1);
 //        Intent i = IntentFactory.navigateProduct(this, p);
 //        startActivity(i);
-
+//        return;
         //Intent i = IntentFactory.takePicture(this, FileHelpers.createTempProductImageFile(this, ProductImageTypes.OVERVIEW, "0123456789123"));
 
 
 
-  //      mTitle = getTitle();
+        mTitle = getTitle();
 
 
 
-//        if (savedInstanceState != null)
-//        {
-//            currentFragmentTag =  savedInstanceState.getString(SC.CURRENT_FRAGMENT);
-//            if (currentFragmentTag == FTags.NON_EXISTING_PRODUCT)
-//            {
-//                barCode = savedInstanceState.getString(SC.BAR_CODE);
-//                barType = savedInstanceState.getString(SC.BAR_TYPE);
-//                renderNonExistingProductFragment();
-//
-//            } else if (currentFragmentTag == FTags.HOME) {
-//                renderHomeFragment();
-//            }
-//
-//        }
-//        else {
-//            renderHomeFragment();
-//        }
+        if (savedInstanceState != null)
+        {
+            currentFragmentTag =  savedInstanceState.getString(SC.CURRENT_FRAGMENT);
+            if (currentFragmentTag == FTags.NON_EXISTING_PRODUCT)
+            {
+                barCode = savedInstanceState.getString(SC.BAR_CODE);
+                barType = savedInstanceState.getString(SC.BAR_TYPE);
+                renderNonExistingProductFragment();
+
+            } else if (currentFragmentTag == FTags.HOME) {
+                renderHomeFragment();
+            }
+
+        }
+        else {
+            renderHomeFragment();
+        }
     }
 
 

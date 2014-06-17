@@ -1,21 +1,18 @@
 package com.alfd.app.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.activeandroid.app.Application;
-import com.alfd.app.R;
 
 import java.util.List;
 
 /**
  * Created by karamon on 28. 4. 2014.
  */
-public class NewProductPageAdapter extends FragmentStatePagerAdapter {
+public class NewProductPageAdapter extends FragmentPagerAdapter {
     private List<Fragment> fragments;
     private Activity activity;
     private String[] titles;

@@ -1,7 +1,6 @@
 package com.alfd.app.data;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
@@ -87,26 +86,28 @@ public class Product extends BaseServerModel {
     }
 
 
-    public void moveTempFiles(Context ctx) {
+    public MoveTempFilesResult moveTempFiles(Context ctx) {
+        MoveTempFilesResult result = new MoveTempFilesResult();
         copyTempImagesToSync(ctx);
         copyTempVoicesToSync(ctx);
-        createProductImages(ctx);
-        moveTempVoiceNotesToProductDir(ctx);
+        result.movedImageFiles = createProductImages(ctx);
+        result.movedVoiceNoteFiles = moveTempVoiceNotesToProductDir(ctx);
         clearProductTempDir(ctx);
-
+        return result;
 
     }
+
 
     private void clearProductTempDir(Context ctx) {
         FileHelpers.clearProductTempDir(ctx);
     }
 
-    private void moveTempVoiceNotesToProductDir(Context ctx) {
-        FileHelpers.moveTempVoiceNotesToProductDir(ctx, BarCode, BarType);
+    private File[] moveTempVoiceNotesToProductDir(Context ctx) {
+        return FileHelpers.moveTempVoiceNotesToProductDir(ctx, BarCode, BarType);
     }
 
-    private void createProductImages(Context ctx) {
-        FileHelpers.createProductImagesFromTempImages(ctx, BarCode, BarType);
+    private File[] createProductImages(Context ctx) {
+        return FileHelpers.createProductImagesFromTempImages(ctx, BarCode, BarType);
 
     }
 
@@ -119,4 +120,12 @@ public class Product extends BaseServerModel {
     }
 
 
+    public class MoveTempFilesResult {
+        public File[] movedVoiceNoteFiles;
+        public File[] movedImageFiles;
+
+        public boolean onlyVoiceNotesMoved() {
+            return movedVoiceNoteFiles.length > 0 && movedImageFiles.length == 0;
+        }
+    }
 }

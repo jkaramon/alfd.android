@@ -55,7 +55,6 @@ public class ProductNameFragment extends Fragment {
         if (savedInstanceState != null) {
             productName = savedInstanceState.getString(SC.PRODUCT_NAME);
         }
-        productName = listener.suggestProductName();
     }
 
     @Override
@@ -74,7 +73,7 @@ public class ProductNameFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_product_name, container, false);
         productNameText = (EditText) view.findViewById(R.id.product_name_text);
-        productNameText.setText(productName);
+        setProductNameText(productName);
         createButton = (Button)view.findViewById(R.id.create_button);
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +102,13 @@ public class ProductNameFragment extends Fragment {
         listener = null;
     }
 
+    public void setProductNameText(String productName) {
+        productNameText.setText(productName);
+    }
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -114,8 +120,6 @@ public class ProductNameFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        public String suggestProductName();
 
         void onCreateProduct(String productName);
     }

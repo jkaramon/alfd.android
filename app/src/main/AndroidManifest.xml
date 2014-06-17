@@ -10,7 +10,8 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -58,6 +59,8 @@
             android:label="@string/title_activity_take_picture"
             android:theme="@style/FullscreenTheme" >
         </activity>
+        <service android:name=".rest.RESTServer" android:exported="false"></service>
+        <service android:name=".services.MoveTempProductFilesService" android:exported="false"></service>
     </application>
 
 </manifest>

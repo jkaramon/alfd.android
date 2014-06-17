@@ -8,4 +8,5 @@ public class LogTags {
     public static final String VOICE_RECORDER = "voice_recorder";
     public static final String FILE_STORAGE = "file_storage";
     public static final String SQL = "SQL";
+    public static final String DBG = "DBG";
 }

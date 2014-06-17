@@ -174,4 +174,9 @@ public class ProductGalleryPhotoFragment extends Fragment implements AdapterView
     public void photoTaken(Intent data) {
 
     }
+
+    public void refresh() {
+        adapter.setImageFiles(listener.getImageFiles(imageType));
+        adapter.notifyDataSetChanged();
+    }
 }

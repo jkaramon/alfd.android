@@ -7,40 +7,6 @@
     android:orientation="vertical">
 
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/record_layout">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="false"
-            android:layout_marginTop="@dimen/margin_medium"
-            android:layout_centerHorizontal="true">
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/margin_medium">
-
-                <ImageButton
-                    android:layout_width="@dimen/touch_button_medium"
-                    android:layout_height="@dimen/touch_button_medium"
-                    android:id="@+id/btn_record"
-                    android:layout_below="@+id/stop_watch"
-                    style="@style/media_button"
-                    android:layout_alignParentLeft="true"
-                    android:background="@drawable/record_button" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-    </RelativeLayout>
-
     <GridView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

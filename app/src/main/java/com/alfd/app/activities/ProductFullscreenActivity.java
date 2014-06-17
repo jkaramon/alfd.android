@@ -66,7 +66,7 @@ public class ProductFullScreenActivity extends BaseProductActivity {
 
     private void iterateFiles(List<ProductFullPhotoFragment> fragments, String imageType) {
         for (File file : getImageFiles(imageType)) {
-            ProductFullPhotoFragment fragment = ProductFullPhotoFragment.newInstance(imageType, file);
+            ProductFullPhotoFragment fragment = ProductFullPhotoFragment.newInstance(file);
             if (file.getAbsolutePath().equalsIgnoreCase(currentFileName)) {
                 currentItemPosition = fragments.size();
             }
