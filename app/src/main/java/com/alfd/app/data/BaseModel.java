@@ -20,6 +20,8 @@ public abstract class BaseModel extends Model {
         return id;
     }
 
+
+
     protected void afterSave() {
     }
 

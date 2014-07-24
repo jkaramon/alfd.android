@@ -4,26 +4,20 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.support.v4.widget.DrawerLayout;
 
 import com.alfd.app.FragmentFactory;
-import com.alfd.app.ProductImageTypes;
 import com.alfd.app.R;
 import com.alfd.app.RequestCodes;
 import com.alfd.app.SC;
 import com.alfd.app.ScanIntentResult;
-import com.alfd.app.activities.fragments.HomeFragment;
+import com.alfd.app.activities.fragments.ScanOrSearchFragment;
 import com.alfd.app.activities.fragments.NonExistingProductFragment;
 import com.alfd.app.data.Product;
 import com.alfd.app.intents.IntentFactory;
-import com.alfd.app.utils.FileHelpers;
 import com.alfd.app.utils.FragmentUtils;
-
-import java.io.File;
 
 
 public class MainActivity extends BaseActionBarActivity
@@ -59,6 +53,8 @@ public class MainActivity extends BaseActionBarActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        //startActivity(new Intent(this, LoginActivity.class));
+        //return;
 //        barCode = "8594008352008";
 //        barType = "EAN13";
 //        renderNonExistingProductFragment();
@@ -148,7 +144,7 @@ public class MainActivity extends BaseActionBarActivity
         FragmentFactory factory = new FragmentFactory() {
             @Override
             public Fragment create() {
-                return HomeFragment.newInstance();
+                return ScanOrSearchFragment.newInstance();
             }
         };
         currentFragmentTag = FTags.HOME;

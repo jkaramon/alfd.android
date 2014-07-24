@@ -1,6 +1,5 @@
 package com.alfd.app.rest;
 
-import com.alfd.app.data.ProductNameCache;
 import com.octo.android.robospice.request.retrofit.RetrofitSpiceRequest;
 
 import roboguice.util.temp.Ln;

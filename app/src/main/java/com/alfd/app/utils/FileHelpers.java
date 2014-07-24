@@ -123,7 +123,11 @@ public class FileHelpers {
         if (dir.isDirectory() == false) {
             Log.w(LogTags.FILE_STORAGE, String.format("Parameter dir is not valid directory. (%s)", dir.getAbsolutePath()));
         }
-        return dir.listFiles(filter);
+        File[] files = dir.listFiles(filter);
+        if (files == null) {
+            return new File[0];
+        }
+        return files;
     }
 
     private static File createTempFile(String fileName, String extension, File storageDir) {

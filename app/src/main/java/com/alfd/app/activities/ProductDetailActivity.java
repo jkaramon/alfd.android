@@ -8,34 +8,30 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-
-import com.alfd.app.ImgSize;
 import com.alfd.app.ProductImageTypes;
 import com.alfd.app.R;
 import com.alfd.app.RequestCodes;
 import com.alfd.app.SC;
 import com.alfd.app.Services;
 import com.alfd.app.activities.fragments.ProductFullPhotoFragment;
-import com.alfd.app.activities.fragments.ProductGalleryPhotoFragment;
 import com.alfd.app.activities.fragments.ProductInfoFragment;
 import com.alfd.app.adapters.ProductDetailPageAdapter;
 import com.alfd.app.data.Product;
 import com.alfd.app.intents.IntentFactory;
 import com.alfd.app.services.BaseServiceReceiver;
-import com.alfd.app.utils.FileHelpers;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ProductDetailActivity extends BaseProductActivity implements ProductInfoFragment.OnFragmentInteractionListener  {
+public class ProductDetailActivity extends BaseProductActivity implements ProductInfoFragment.OnFragmentInteractionListener, android.view.ActionMode.Callback {
     long productId;
 
     private ProductDetailPageAdapter pageAdapter;
@@ -45,6 +41,9 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
     private MoveTempFilesReceiver moveTempFilesReceiver;
     private LinearLayout addVoiceNoteLayout;
     private LinearLayout contentLayout;
+
+    ActionMode actionMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,9 +114,8 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_voice_note:
-                Toast.makeText(this, "Recording voice note", Toast.LENGTH_SHORT).show();
                 showVoiceNoteRecorder();
-
+                actionMode = startActionMode(this);
                 return true;
             case R.id.action_take_picture:
                 String imageType = ProductImageTypes.OVERVIEW;
@@ -131,7 +129,7 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
     @Override
     public void onVoiceNoteRecorded() {
         super.onVoiceNoteRecorded();
-        hideVoiceNoteRecorder();
+
     }
     public void showVoiceNoteRecorder() {
         addVoiceNoteLayout.setVisibility(View.VISIBLE);
@@ -151,6 +149,32 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
         }
 
     }
+
+    @Override
+    public boolean onCreateActionMode(android.view.ActionMode mode, Menu menu) {
+        // Inflate a menu resource providing context menu items
+        MenuInflater inflater = mode.getMenuInflater();
+        inflater.inflate(R.menu.record_voice_note, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(android.view.ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(android.view.ActionMode mode, MenuItem menuItem) {
+        actionMode.finish();
+        return true;
+    }
+
+    @Override
+    public void onDestroyActionMode(android.view.ActionMode mode) {
+        actionMode = null;
+        hideVoiceNoteRecorder();
+    }
+
     private class MoveTempFilesReceiver extends BaseServiceReceiver {
 
         @Override

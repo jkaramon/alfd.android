@@ -24,6 +24,8 @@ import android.os.StrictMode;
 import com.alfd.app.activities.MainActivity;
 import com.alfd.app.activities.NewProductActivity;
 
+import java.text.Normalizer;
+
 /**
  * Class containing some static utility methods.
  */
@@ -78,5 +80,17 @@ public class Utils {
 
     public static boolean hasKitKat() {
         return Build.VERSION.SDK_INT >= VERSION_CODES.KITKAT;
+    }
+
+    public static boolean isBlank(String val) {
+        return val == null || val.trim() == "";
+    }
+
+    public static String transliterate(String val) {
+        if (isBlank(val)) {
+            return val;
+        }
+        String normalized = Normalizer.normalize(val, Normalizer.Form.NFKC);
+        return normalized.toLowerCase();
     }
 }

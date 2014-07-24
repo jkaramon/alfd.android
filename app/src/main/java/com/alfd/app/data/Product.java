@@ -1,16 +1,20 @@
 package com.alfd.app.data;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 import com.alfd.app.ImgSize;
 import com.alfd.app.utils.FileHelpers;
+import com.alfd.app.utils.Utils;
 
 import net.sourceforge.zbar.Symbol;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by karamon on 10. 4. 2014.
@@ -27,13 +31,29 @@ public class Product extends BaseServerModel {
     public String BarType;
 
     @Column
-    public String OverviewPhotos;
-    @Column
-    public String IngredientsPhotos;
-    @Column
     public String Description;
 
+    @Column
+    public String SearchName;
 
+
+    @Override
+    protected void beforeSave() {
+        List<String> parts = new ArrayList<String>();
+        appendSearchNamePart(parts, Name);
+        appendSearchNamePart(parts, Description);
+        parts.add(BarCode);
+        SearchName = TextUtils.join("|", parts);
+        super.beforeSave();
+    }
+
+    private void appendSearchNamePart(List<String> parts, String val) {
+        if (Utils.isBlank(val)) {
+            return;
+        }
+        parts.add(val.toLowerCase());
+        parts.add(Utils.transliterate(val));
+    }
 
 
     public Product(){
@@ -117,6 +137,25 @@ public class Product extends BaseServerModel {
 
     private void copyTempImagesToSync(Context ctx) {
         FileHelpers.copyTempImagesToSync(ctx, BarCode, BarType);
+    }
+
+    public static Product getByBarCode(String barCode) {
+        return new Select()
+                .from(Product.class)
+                .where("BarCode = ?", barCode)
+                .executeSingle();
+    }
+
+    public static Product fromREST(com.alfd.app.rest.Product restProduct) {
+        Product p = new Product();
+        p.fillFromREST(restProduct);
+        return p;
+    }
+    public void fillFromREST(com.alfd.app.rest.Product restProduct) {
+        this.BarCode = restProduct.barCode;
+        this.BarType = restProduct.barType;
+        this.Name = restProduct.name;
+        this.Description = restProduct.description;
     }
 
 

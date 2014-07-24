@@ -1,14 +1,21 @@
+//
+//task copyDBToSD(type: Exec, group: 'Database') {
+//    commandLine 'cmd', '/c', 'adb', 'shell', 'su', '-c', '"cp /data/data/com.alfd.app/databases/com.alfd.db /mnt/sdcard"'
+//}
+//
+//task delDB(type: Exec, group: 'Database') {
+//    commandLine 'cmd', '/c', 'adb', 'shell', 'su', '-c', '"rm /data/data/com.alfd.app/databases/com.alfd.db"'
+//}
 
-task copyDBToSD(type: Exec, group: 'Database') {
-    commandLine 'cmd', '/c', 'adb', 'shell', 'su', '-c', '"cp /data/data/com.alfd.app/databases/com.alfd.db /mnt/sdcard"'
+
+
+
+task downloadDB(type: Exec, group: 'Database') {
+    commandLine 'cmd', '/c', 'adb', 'pull', '/mnt/sdcard/com.alfd.db', 'c:\\Users\\karamon\\Projects\\ALFD.android\\.tmp\\com.alfd.db'
 }
 
-task delDB(type: Exec, group: 'Database') {
-    commandLine 'cmd', '/c', 'adb', 'shell', 'su', '-c', '"rm /data/data/com.alfd.app/databases/com.alfd.db"'
-}
-
-task downloadDB(type: Exec, group: 'Database', dependsOn: 'copyDBToSD') {
-    commandLine 'cmd', '/c', 'adb', 'pull', '/mnt/sdcard/com.alfd.db', 'c:\\Users\\karamon\\Projects\\ALFD.android\\.tmp'
+task deleteDB(type: Exec, group: 'Database') {
+    commandLine 'cmd', '/c', 'adb', 'shell' , 'rm', '/mnt/sdcard/com.alfd.db'
 }
 task openDB(type: Exec, group: 'Database', dependsOn: 'downloadDB') {
     commandLine '"C:\\Program Files (x86)\\sqlitebrowser\\SQLite Database Browser 2.0 b1.exe"', 'c:\\Users\\karamon\\Projects\\ALFD.android\\.tmp\\com.alfd.db'
@@ -19,7 +26,7 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.3"
+    buildToolsVersion "19.1.0"
 
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
@@ -37,22 +44,35 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
     buildTypes {
         release {
             runProguard false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+
+
     }
+
 }
 repositories {
 
     mavenCentral()
 }
 dependencies {
+    // Google Play Services
+    compile 'com.google.android.gms:play-services:4.4.52'
+
+    // Support Libraries
+    compile 'com.android.support:support-v4:19.1.0'
+    compile 'com.android.support:appcompat-v7:19.1.0'
+    compile 'com.android.support:gridlayout-v7:19.1.0'
+    compile 'com.android.support:mediarouter-v7:19.1.0'
+    compile 'com.android.support:support-v13:19.1.0'
+    compile 'net.danlew:android.joda:2.3.4'
     compile 'com.octo.android.robospice:robospice-retrofit:1.4.12'
     compile 'com.octo.android.robospice:robospice:1.4.12'
-    compile 'com.android.support:support-v4:19.0.1'
-    compile 'com.android.support:appcompat-v7:19.0.1'
+    compile 'com.github.gabrielemariotti.cards:library:1.8.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('src/main/libs/zbar.jar')
     compile files('src/main/libs/ormlite-core-4.48.jar')

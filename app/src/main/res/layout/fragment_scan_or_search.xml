@@ -1,0 +1,42 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.alfd.app.activities.fragments.ScanOrSearchFragment"
+    android:focusableInTouchMode="true">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/scan"
+        android:id="@+id/scan_button"
+        style="@style/button_home_scan"
+        android:src="@drawable/barcode"
+        android:singleLine="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/search_text"
+        android:layout_centerHorizontal="true"
+        style="@style/large_text_view"
+        android:layout_below="@+id/scan_button" />
+    <it.gmariotti.cardslib.library.view.CardGridView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="190dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="3dp"
+        android:horizontalSpacing="2dp"
+        android:stretchMode="columnWidth"
+        android:gravity="center"
+        android:id="@+id/product_list"
+        android:layout_below="@+id/search_text" />
+
+</RelativeLayout>

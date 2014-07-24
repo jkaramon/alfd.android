@@ -1,4 +1,4 @@
-package com.alfd.app.data;
+package com.alfd.app.rest;
 
 
 public class ProductNameCache {

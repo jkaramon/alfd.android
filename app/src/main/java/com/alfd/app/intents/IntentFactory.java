@@ -27,8 +27,12 @@ public class IntentFactory {
     }
 
     public static Intent navigateProduct(Context context, Product p) {
+
+        return navigateProduct(context, p.getId());
+    }
+    public static Intent navigateProduct(Context context, Long id) {
         Intent i = new Intent(context, ProductDetailActivity.class);
-        i.putExtra(SC.PRODUCT_ID, p.getId());
+        i.putExtra(SC.PRODUCT_ID, id);
         return i;
     }
 

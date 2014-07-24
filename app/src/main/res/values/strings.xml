@@ -27,5 +27,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="menu_add_picture_button">Add picture</string>
     <string name="menu_voice_record_button">Create voice note</string>
+    <string name="title_activity_login">LoginActivity</string>
 
 </resources>

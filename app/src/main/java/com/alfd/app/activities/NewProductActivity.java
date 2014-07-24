@@ -20,7 +20,7 @@ import com.alfd.app.activities.fragments.AddVoiceNoteFragment;
 import com.alfd.app.activities.fragments.ProductGalleryPhotoFragment;
 import com.alfd.app.activities.fragments.ProductNameFragment;
 import com.alfd.app.adapters.NewProductPageAdapter;
-import com.alfd.app.data.ProductNameCache;
+import com.alfd.app.rest.ProductNameCache;
 import com.alfd.app.intents.IntentFactory;
 import com.alfd.app.rest.SuggestProductNameRequest;
 import com.alfd.app.services.BaseServiceReceiver;
@@ -156,7 +156,7 @@ public class NewProductActivity extends BaseProductActivity  {
         }
     }
 
-    private class SuggestProductNameRequestListener implements com.octo.android.robospice.request.listener.RequestListener<com.alfd.app.data.ProductNameCache> {
+    private class SuggestProductNameRequestListener implements com.octo.android.robospice.request.listener.RequestListener<ProductNameCache> {
 
         @Override
         public void onRequestFailure(SpiceException spiceException) {

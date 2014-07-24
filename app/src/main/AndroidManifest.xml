@@ -10,8 +10,11 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
@@ -37,12 +40,16 @@
             android:theme="@style/FullscreenTheme" />
 
         <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
             android:name="AA_DB_NAME"
-            android:value="com.alfd.db" />
+            android:value="/mnt/sdcard/com.alfd.db" />
         <meta-data
             android:name="AA_DB_VERSION"
             android:value="1" />
-
+        <meta-data android:name="AA_SERIALIZERS"
+            android:value="com.alfd.app.data.JodaDateTimeSerializer" />
         <activity
             android:name="com.alfd.app.activities.NewProductActivity"
             android:label="@string/title_activity_new_product" >
@@ -59,8 +66,20 @@
             android:label="@string/title_activity_take_picture"
             android:theme="@style/FullscreenTheme" >
         </activity>
-        <service android:name=".rest.RESTServer" android:exported="false"></service>
-        <service android:name=".services.MoveTempProductFilesService" android:exported="false"></service>
+
+        <service
+            android:name="com.alfd.app.rest.RESTServer"
+            android:exported="false" />
+        <service
+            android:name="com.alfd.app.services.MoveTempProductFilesService"
+            android:exported="false" />
+        <service
+            android:name="com.alfd.app.services.InitialSyncService"
+            android:exported="false" />
+        <activity
+            android:name=".activities.LoginActivity"
+            android:label="@string/title_activity_login" >
+        </activity>
     </application>
 
 </manifest>

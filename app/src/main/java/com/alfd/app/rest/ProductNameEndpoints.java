@@ -1,8 +1,6 @@
 package com.alfd.app.rest;
 
 
-import com.alfd.app.data.ProductNameCache;
-
 import retrofit.http.GET;
 import retrofit.http.Path;
 
