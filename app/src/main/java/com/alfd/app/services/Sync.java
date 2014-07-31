@@ -32,10 +32,19 @@ public class Sync {
 
     public void ensureInitialSync(Activity activity) {
         SyncInfo si = SyncInfo.get();
-        if (si != null && si.initialSyncNeeded()) {
+        if (si.initialSyncAllowed()) {
             return;
         }
         Intent svcIntent = new Intent(activity, InitialSyncService.class);
+        activity.startService(svcIntent);
+    }
+
+    public void sync(Activity activity, boolean enforce) {
+        SyncInfo si = SyncInfo.get();
+        if (si.syncDisabled(enforce)) {
+            return;
+        }
+        Intent svcIntent = new Intent(activity, SyncService.class);
         activity.startService(svcIntent);
     }
 

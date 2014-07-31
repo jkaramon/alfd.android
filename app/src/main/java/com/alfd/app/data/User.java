@@ -1,5 +1,6 @@
 package com.alfd.app.data;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -7,9 +8,14 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 import com.alfd.app.LogTags;
+import com.alfd.app.R;
+import com.alfd.app.utils.Settings;
+import com.alfd.app.utils.Utils;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+
+import java.util.List;
 
 /**
  * Created by karamon on 15. 7. 2014.
@@ -63,6 +69,7 @@ public class User extends BaseServerModel {
 
     public static boolean needSignin() {
         User u = getLoggedIn();
+
         if (u == null) {
             return true;
         }
@@ -75,7 +82,28 @@ public class User extends BaseServerModel {
                 .executeSingle();
     }
 
+    public static void signOut() {
+        List<User> users = new Select()
+                .from(User.class)
+                .where("LoggedIn = 1")
+                .execute();
+        for (User u : users) {
+            u.LoggedIn = false;
+            u.GoogleAccessToken = null;
+            u.save();
+        }
+    }
+
+    public static List<User> getMembers() {
+        return new Select()
+                .from(User.class)
+                .execute();
+    }
+
     public static User getByGoogleAccountName(String googleAccountName) {
+        if (googleAccountName == null) {
+            return null;
+        }
         return new Select()
                 .from(User.class)
                 .where("GoogleAccountName = ?", googleAccountName)
@@ -163,4 +191,16 @@ public class User extends BaseServerModel {
     }
 
 
+    public int getAvatarResourceId(Context ctx) {
+        if (Utils.isBlank(this.Avatar)) {
+            return R.drawable.male1;
+        }
+        int resId = ctx.getResources().
+                getIdentifier( Avatar.toLowerCase(), "drawable", ctx.getPackageName());
+        if (resId == 0) {
+            return R.drawable.male1;
+        }
+        return resId;
+
+    }
 }

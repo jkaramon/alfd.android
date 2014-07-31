@@ -70,6 +70,7 @@ dependencies {
     compile 'com.android.support:mediarouter-v7:19.1.0'
     compile 'com.android.support:support-v13:19.1.0'
     compile 'net.danlew:android.joda:2.3.4'
+    compile group: 'com.google.guava', name: 'guava', version: '17.0'
     compile 'com.octo.android.robospice:robospice-retrofit:1.4.12'
     compile 'com.octo.android.robospice:robospice:1.4.12'
     compile 'com.github.gabrielemariotti.cards:library:1.8.0'

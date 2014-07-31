@@ -16,6 +16,7 @@ import com.alfd.app.RequestCodes;
 import com.alfd.app.data.User;
 import com.alfd.app.rest.RESTServer;
 import com.alfd.app.services.Sync;
+import com.alfd.app.utils.Settings;
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.UserRecoverableAuthException;
@@ -36,7 +37,7 @@ import java.io.InputStream;
  */
 public class BaseActionBarActivity extends ActionBarActivity  {
     private SpiceManager spiceManager = new SpiceManager(RESTServer.class);
-    private Sync sync = new Sync();
+    protected Sync sync = new Sync();
 
 
 
@@ -45,10 +46,12 @@ public class BaseActionBarActivity extends ActionBarActivity  {
         spiceManager.start(this);
         super.onStart();
         if (User.needSignin()) {
+            Settings.clearAccessToken();
             startActivityForResult(new Intent(this, LoginActivity.class), RequestCodes.PROCESS_SIGNIN);
         }
         else {
-            sync.ensureInitialSync(this);
+            //sync.ensureInitialSync(this);
+            sync.sync(this, true);
         }
     }
 

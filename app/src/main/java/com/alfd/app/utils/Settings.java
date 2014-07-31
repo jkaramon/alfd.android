@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.alfd.app.AlfdApplication;
+import com.alfd.app.data.User;
 
 public class Settings {
     private static String ACCESS_TOKEN = "accessToken";
@@ -20,6 +21,11 @@ public class Settings {
 
     public static void setAccessToken(String value) {
         getPrefs().edit().putString(ACCESS_TOKEN, value).commit();
+    }
+    public static void clearAccessToken() {
+
+        getPrefs().edit().remove(ACCESS_TOKEN).commit();
+        User.signOut();
     }
 
 

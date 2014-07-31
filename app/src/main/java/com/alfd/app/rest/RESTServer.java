@@ -53,7 +53,7 @@ public class RESTServer extends RetrofitSpiceService {
     protected RestAdapter.Builder createRestAdapterBuilder() {
         return new RestAdapter.Builder()
                 .setEndpoint(getServerUrl())
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.BASIC)
                 .setConverter(getConverter())
                 .setRequestInterceptor(requestInterceptor);
     }

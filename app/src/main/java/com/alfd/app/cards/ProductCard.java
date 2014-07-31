@@ -64,9 +64,9 @@ public class ProductCard extends Card {
 
     @Override
     public void setupInnerViewElements(ViewGroup parent, View view) {
-
-        txtBarCode = (TextView) parent.findViewById(R.id.product_card_inner_bar_code);
-        txtDescription = (TextView) parent.findViewById(R.id.product_card_inner_description);
+        super.setupInnerViewElements(parent, view);
+        txtBarCode = (TextView) view.findViewById(R.id.product_card_inner_bar_code);
+        txtDescription = (TextView) view.findViewById(R.id.product_card_inner_description);
 
 
 

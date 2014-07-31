@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.ActionMode;
@@ -21,9 +23,11 @@ import com.alfd.app.SC;
 import com.alfd.app.Services;
 import com.alfd.app.activities.fragments.ProductFullPhotoFragment;
 import com.alfd.app.activities.fragments.ProductInfoFragment;
+import com.alfd.app.activities.fragments.SetSensitivityFragment;
 import com.alfd.app.adapters.ProductDetailPageAdapter;
 import com.alfd.app.data.Product;
 import com.alfd.app.intents.IntentFactory;
+import com.alfd.app.interfaces.ProductDetailListener;
 import com.alfd.app.services.BaseServiceReceiver;
 
 import java.io.File;
@@ -31,8 +35,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ProductDetailActivity extends BaseProductActivity implements ProductInfoFragment.OnFragmentInteractionListener, android.view.ActionMode.Callback {
-    long productId;
+public class ProductDetailActivity extends BaseProductActivity implements ProductDetailListener, android.view.ActionMode.Callback {
+
 
     private ProductDetailPageAdapter pageAdapter;
     private File[] imageFiles;
@@ -43,6 +47,7 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
     private LinearLayout contentLayout;
 
     ActionMode actionMode;
+    private ProductInfoFragment productInfoFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +92,8 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
 
     private void refreshFragments() {
         fragments = new ArrayList<Fragment>();
-        fragments.add(ProductInfoFragment.newInstance());
+        productInfoFragment = ProductInfoFragment.newInstance();
+        fragments.add(productInfoFragment);
         for (File f : imageFiles) {
             fragments.add(ProductFullPhotoFragment.newInstance(f));
         }
@@ -121,14 +127,23 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
                 String imageType = ProductImageTypes.OVERVIEW;
                 IntentFactory.takePicture(this, imageType, getTempFileToSave(imageType));
                 return true;
+            case R.id.action_set_sensitivity:
+                showSetSensitivityDialog();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    private void showSetSensitivityDialog() {
+        startActivityForResult(IntentFactory.setSensitivity(this, product.getId()), RequestCodes.SET_SENSITIVITY);
+    }
+
     @Override
-    public void onVoiceNoteRecorded() {
-        super.onVoiceNoteRecorded();
+    public void onVoiceNoteRecorded(File recordedFile) {
+        super.onVoiceNoteRecorded(recordedFile);
+        startMoveProductFilesService();
+
 
     }
     public void showVoiceNoteRecorder() {
@@ -146,6 +161,11 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
         if (requestCode == RequestCodes.IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
 
             startMoveProductFilesService();
+        }
+        if (requestCode == RequestCodes.SET_SENSITIVITY && resultCode == Activity.RESULT_OK) {
+            productInfoFragment.refreshSensitivityList();
+            sync.sync(this, true);
+
         }
 
     }
@@ -194,8 +214,9 @@ public class ProductDetailActivity extends BaseProductActivity implements Produc
                 return;
             }
             product.saveWithCallbacks();
-            if (voiceNotesMoved > 0) {
+            if (voiceNotesMoved > 0 || voiceNoteRecorded) {
                 activity.refreshVoiceNotes();
+                voiceNoteRecorded = false;
             }
             if (imagesMoved > 0) {
                 activity.recreate();

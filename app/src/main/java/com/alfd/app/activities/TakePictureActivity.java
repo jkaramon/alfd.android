@@ -1,5 +1,6 @@
 package com.alfd.app.activities;
 
+import com.alfd.app.Exif;
 import com.alfd.app.SC;
 import com.alfd.app.activities.util.SystemUiHider;
 
@@ -12,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.hardware.Camera;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Surface;
@@ -24,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.alfd.app.R;
+import com.alfd.app.utils.Utils;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -54,6 +57,7 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
     private Camera.PictureCallback pictureCallback;
     private String imageFullName;
     private Camera.Size imageSize;
+    private String imageType;
 
     /**
      * Called when the activity is first created.
@@ -69,6 +73,7 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
 
             Bundle extras = getIntent().getExtras();
             imageFullName = extras.getString(SC.IMAGE_FULL_NAME);
+            imageType = extras.getString(SC.IMAGE_TYPE);
 
 
             surfaceView = (SurfaceView) findViewById(R.id.camera_preview);
@@ -242,10 +247,17 @@ public class TakePictureActivity extends Activity implements SurfaceHolder.Callb
             } catch(Throwable ignore) {}
         }
 
+        try {
+            ExifInterface ei = new ExifInterface(imageFullName);
+            if (Utils.isBlank(imageType) == false) {
+                ei.setAttribute(Exif.IMAGE_TYPE, imageType);
+            }
+            ei.saveAttributes();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        Toast.makeText(getApplicationContext(),
-                "Your Picture has been taken !", Toast.LENGTH_LONG)
-                .show();
+
     }
 
 

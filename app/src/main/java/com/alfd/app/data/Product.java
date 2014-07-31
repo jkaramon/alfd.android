@@ -12,6 +12,8 @@ import com.alfd.app.utils.Utils;
 
 import net.sourceforge.zbar.Symbol;
 
+import org.joda.time.DateTime;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +96,7 @@ public class Product extends BaseServerModel {
 
 
     public File getPrimaryPhoto(Context ctx) {
-        File[] files = FileHelpers.getProductImageFiles(ctx, BarCode, BarType, ImgSize.LARGE);
+        File[] files = FileHelpers.getProductImageFiles(ctx, BarCode, BarType);
         if (files.length > 0) {
             return files[0];
         }
@@ -108,10 +110,8 @@ public class Product extends BaseServerModel {
 
     public MoveTempFilesResult moveTempFiles(Context ctx) {
         MoveTempFilesResult result = new MoveTempFilesResult();
-        copyTempImagesToSync(ctx);
-        copyTempVoicesToSync(ctx);
-        result.movedImageFiles = createProductImages(ctx);
-        result.movedVoiceNoteFiles = moveTempVoiceNotesToProductDir(ctx);
+        result.movedImageFiles = moveTempProductImages(ctx);
+        result.movedVoiceNoteFiles = moveTempVoiceNotes(ctx);
         clearProductTempDir(ctx);
         return result;
 
@@ -122,22 +122,18 @@ public class Product extends BaseServerModel {
         FileHelpers.clearProductTempDir(ctx);
     }
 
-    private File[] moveTempVoiceNotesToProductDir(Context ctx) {
-        return FileHelpers.moveTempVoiceNotesToProductDir(ctx, BarCode, BarType);
+    private File[] moveTempVoiceNotes(Context ctx) {
+        return FileHelpers.moveTempVoiceNotes(ctx, BarCode, BarType);
     }
 
-    private File[] createProductImages(Context ctx) {
-        return FileHelpers.createProductImagesFromTempImages(ctx, BarCode, BarType);
+    private File[] moveTempProductImages(Context ctx) {
+        return FileHelpers.moveTempImages(ctx, BarCode, BarType);
 
     }
 
-    private void copyTempVoicesToSync(Context ctx) {
-        FileHelpers.copyTempVoicesToSync(ctx, BarCode, BarType);
-    }
 
-    private void copyTempImagesToSync(Context ctx) {
-        FileHelpers.copyTempImagesToSync(ctx, BarCode, BarType);
-    }
+
+
 
     public static Product getByBarCode(String barCode) {
         return new Select()
@@ -157,6 +153,17 @@ public class Product extends BaseServerModel {
         this.Name = restProduct.name;
         this.Description = restProduct.description;
     }
+
+    public com.alfd.app.rest.Product toREST() {
+        com.alfd.app.rest.Product restProduct = new com.alfd.app.rest.Product();
+        restProduct.barCode = BarCode;
+        restProduct.barType = BarType;
+        restProduct.description = Description;
+        restProduct.name = Name;
+        return restProduct;
+    }
+
+
 
 
     public class MoveTempFilesResult {

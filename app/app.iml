@@ -82,6 +82,7 @@
     <orderEntry type="library" exported="" name="play-services-4.4.52" level="project" />
     <orderEntry type="library" exported="" name="retrofit-1.5.0" level="project" />
     <orderEntry type="library" exported="" name="activeandroid" level="project" />
+    <orderEntry type="library" exported="" name="guava-17.0" level="project" />
     <orderEntry type="library" exported="" name="robospice-cache-1.4.12" level="project" />
     <orderEntry type="library" exported="" name="robospice-1.4.12" level="project" />
     <orderEntry type="library" exported="" name="support-v13-19.1.0" level="project" />

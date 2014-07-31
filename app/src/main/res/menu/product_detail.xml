@@ -10,5 +10,9 @@
         android:icon="@android:drawable/ic_menu_camera"
         android:title="@string/menu_add_picture_button"
         yourapp:showAsAction="ifRoom"  />
+    <item android:id="@+id/action_set_sensitivity"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/menu_set_sensitivity"
+        yourapp:showAsAction="ifRoom"  />
     ...
 </menu>

@@ -42,8 +42,9 @@ public class BaseProductActivity extends BaseActionBarActivity implements AddVoi
 
     private MediaRecorder recorder = null;
     private MediaPlayer player = null;
+    private File recordedAudioFile;
 
-
+    protected boolean voiceNoteRecorded;
     public enum RecordMediaState {
         RECORDING, STOPPED
     }
@@ -107,17 +108,17 @@ public class BaseProductActivity extends BaseActionBarActivity implements AddVoi
 
     @Override
     public File getTempFileToSave(String imageType) {
-        return FileHelpers.createTempProductImageFile(this, imageType, product.BarCode, product.BarType);
+        return FileHelpers.createTempProductImageFile(this, product.BarCode, product.BarType);
     }
 
     @Override
     public File[] getImageFiles(String imageType) {
         if (product.isNew()) {
-            return FileHelpers.getProductImageTempFiles(this, imageType, product.BarCode, product.BarType);
+            return FileHelpers.getProductImageTempFiles(this, product.BarCode, product.BarType);
         }
         else {
 
-            return FileHelpers.getProductImageFiles(this, product.BarCode, product.BarType, ImgSize.LARGE);
+            return FileHelpers.getProductImageFiles(this, product.BarCode, product.BarType);
         }
     }
 
@@ -148,12 +149,17 @@ public class BaseProductActivity extends BaseActionBarActivity implements AddVoi
         stopRecording();
     }
 
-    public void onVoiceNoteRecorded() {
+    public void onVoiceNoteRecorded(File recordedFile) {
+        if (product.isNew() == false) {
+            FileHelpers.copyProductVoiceNoteToSync(this, product.BarCode, product.BarType, recordedFile);
+        }
         refreshVoiceNotes();
     }
 
     protected void refreshVoiceNotes() {
-        getVoiceNotesFragment().refreshNotes();
+        if (getVoiceNotesFragment() != null) {
+            getVoiceNotesFragment().refreshNotes();
+        }
     }
 
     public File createVoiceNoteFile() {
@@ -275,7 +281,8 @@ public class BaseProductActivity extends BaseActionBarActivity implements AddVoi
         recorder = new MediaRecorder();
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        recorder.setOutputFile(createVoiceNoteFile().getAbsolutePath());
+        recordedAudioFile = createVoiceNoteFile();
+        recorder.setOutputFile(recordedAudioFile.getAbsolutePath());
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 
 
@@ -299,7 +306,8 @@ public class BaseProductActivity extends BaseActionBarActivity implements AddVoi
             if (recorder != null) {
                 recorder.stop();
                 recorder.release();
-                onVoiceNoteRecorded();
+                voiceNoteRecorded = true;
+                onVoiceNoteRecorded(recordedAudioFile);
 
                 recorder = null;
             }
@@ -308,6 +316,8 @@ public class BaseProductActivity extends BaseActionBarActivity implements AddVoi
 
         }
         finally {
+            recordedAudioFile = null;
+
             recordState = RecordMediaState.STOPPED;
         }
 

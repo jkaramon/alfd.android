@@ -28,5 +28,8 @@
     <string name="menu_add_picture_button">Add picture</string>
     <string name="menu_voice_record_button">Create voice note</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="menu_set_sensitivity">Set Sensitivity</string>
+    <string name="optional_short_note">Add short note (optional)</string>
+    <string name="title_activity_set_sensitivity">SetSensitivityActivity</string>
 
 </resources>

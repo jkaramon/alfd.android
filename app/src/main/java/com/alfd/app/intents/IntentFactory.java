@@ -12,7 +12,9 @@ import com.alfd.app.SC;
 import com.alfd.app.activities.MainActivity;
 import com.alfd.app.activities.NewProductActivity;
 import com.alfd.app.activities.ProductDetailActivity;
+import com.alfd.app.activities.SetSensitivityActivity;
 import com.alfd.app.activities.TakePictureActivity;
+import com.alfd.app.activities.fragments.SetSensitivityFragment;
 import com.alfd.app.data.Product;
 
 import java.io.File;
@@ -40,9 +42,9 @@ public class IntentFactory {
 
 
 
-    public static Intent takePicture(Activity activity, String sourceTag, File file) {
+    public static Intent takePicture(Activity activity, String imageType, File file) {
         Intent i = new Intent(activity, TakePictureActivity.class);
-        i.putExtra("source", sourceTag);
+        i.putExtra(SC.IMAGE_TYPE, imageType);
         if (i.resolveActivity(activity.getPackageManager()) != null) {
             if (file != null) {
                 i.putExtra(SC.IMAGE_FULL_NAME, file.getAbsolutePath());
@@ -55,6 +57,9 @@ public class IntentFactory {
     }
 
 
-    public static void takeProductPicture(Activity activity, String barCode, String barType, String overview) {
+    public static Intent setSensitivity(Context ctx, long productId) {
+        Intent i = new Intent(ctx, SetSensitivityActivity.class);
+        i.putExtra(SC.PRODUCT_ID, productId);
+        return i;
     }
 }

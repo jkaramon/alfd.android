@@ -10,8 +10,11 @@ import com.alfd.app.ImgSize;
 import com.alfd.app.LogTags;
 import com.alfd.app.ProductImageTypes;
 import com.alfd.app.activities.BaseProductActivity;
+import com.alfd.app.services.ProductAssetsSyncService;
+import com.google.common.io.ByteStreams;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,6 +43,7 @@ public class FileHelpers {
         ensureDir(getSyncVoiceDir(ctx));
         ensureDir(getProductBaseDir(ctx));
 
+
     }
     public static boolean ensureDir(File folder) {
         boolean success = true;
@@ -49,8 +53,8 @@ public class FileHelpers {
         return true;
     }
 
-    public static File createTempProductImageFile(Context ctx, String imageType, String barCode, String barType) {
-        String fileName = getTempImageName(imageType, barCode, barType);
+    public static File createTempProductImageFile(Context ctx, String barCode, String barType) {
+        String fileName = getTempImageName(barCode, barType);
         File storageDir = getTempImageDir(ctx);
         return createTempFile(fileName, IMG_EXT, storageDir);
     }
@@ -72,12 +76,12 @@ public class FileHelpers {
     }
 
 
-    public static File[] getProductImageTempFiles(Context ctx, final String imageType, final String barCode, final String barType) {
+    public static File[] getProductImageTempFiles(Context ctx, final String barCode, final String barType) {
         File dir = getTempImageDir(ctx);
         FilenameFilter filter = new FilenameFilter() {
             File f;
             public boolean accept(File dir, String name) {
-                if(name.startsWith(getTempImageName(imageType, barCode, barType))) {
+                if(name.startsWith(getTempImageName(barCode, barType))) {
                     return true;
                 }
                 return false;
@@ -99,8 +103,18 @@ public class FileHelpers {
         return listFiles(dir, filter);
     }
 
-    public static File[] getProductImageFiles(Context ctx, String barCode, String barType, ImgSize size) {
-        File dir = getProductImageDir(ctx, barCode, barType, size);
+    public static File[] getProductImageFiles(Context ctx, String barCode, String barType) {
+        ImgSize[] sizes = new ImgSize[2];
+        sizes[0] = ImgSize.LARGE;
+        sizes[1] = ImgSize.SMALL;
+
+        File dir = null;
+        for (ImgSize size : sizes) {
+            dir = getProductImageDir(ctx, barCode, barType, size);
+            if (dir.exists()) {
+                break;
+            }
+        }
         FilenameFilter filter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return true;
@@ -118,6 +132,26 @@ public class FileHelpers {
         };
         return listFiles(dir, filter);
     }
+
+    public static File[] getImageFilesToUpload(Context ctx) {
+        File dir = getSyncImageDir(ctx);
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return true;
+            }
+        };
+        return listFiles(dir, filter);
+    }
+    public static File[] getVoiceNoteFilesToUpload(Context ctx) {
+        File dir = getSyncVoiceDir(ctx);
+        FilenameFilter filter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return true;
+            }
+        };
+        return listFiles(dir, filter);
+    }
+
 
     private static File[] listFiles(File dir, FilenameFilter filter) {
         if (dir.isDirectory() == false) {
@@ -162,6 +196,7 @@ public class FileHelpers {
     private static File getSyncImageDir(Context ctx) {
         return getBaseFolder(ctx, "upload/images");
     }
+
     private static File getTempImageDir(Context ctx) {
         return getBaseFolder(ctx, "temp/images");
     }
@@ -175,17 +210,17 @@ public class FileHelpers {
         return new File(new File(Environment.getExternalStorageDirectory(), "ALFD"), subFolder);
     }
 
-    private static String getTempImageName(String imageType, String barCode, String barType) {
-        return String.format("temp.%s.%s.%s", imageType, barCode, barType);
+    private static String getTempImageName(String barCode, String barType) {
+        return String.format("temp.%s.%s", barCode, barType);
     }
     private static String getTempVoiceName(String barCode, String barType) {
         return String.format("temp.%s.%s", barCode, barType);
     }
-    private static String getSyncImageName(String sequenceId, String barCode, String barType, String imageType) {
-        return String.format("%s.%s.%s.%s%s", barCode, barType, imageType, sequenceId, IMG_EXT);
+    private static String getSyncImageName(String sequenceId, String barCode, String barType) {
+        return String.format("%s.%s.%s%s", barCode, barType, sequenceId, IMG_EXT);
     }
-    private static String getProductImageName(String sequenceId, String imageType) {
-        return String.format("%s.%s%s", imageType, sequenceId, IMG_EXT);
+    private static String getProductImageName(String sequenceId) {
+        return String.format("%s%s", sequenceId, IMG_EXT);
     }
 
     private static String getSyncVoiceName(  String barCode, String barType, String sequenceId) {
@@ -197,11 +232,17 @@ public class FileHelpers {
 
 
 
-    private static String getImageSizeName(ImgSize size) {
+    public static String getImageSizeName(ImgSize size) {
         String imgSize;
         switch (size) {
             case THUMB:
                 imgSize = "thumb";
+                break;
+            case SMALL:
+                imgSize = "small";
+                break;
+            case MEDIUM:
+                imgSize = "small";
                 break;
             default:
                 imgSize = "large";
@@ -209,40 +250,38 @@ public class FileHelpers {
         }
         return imgSize;
     }
-
-
-
-
-    public static boolean copyTempImagesToSync(Context ctx, String barCode, String barType) {
-        File[] fOverview = getProductImageTempFiles(ctx, ProductImageTypes.OVERVIEW, barCode, barType);
-        File[] fIngredients = getProductImageTempFiles(ctx, ProductImageTypes.OVERVIEW, barCode, barType);
-
-        for (int i = 0; i<fOverview.length; i++) {
-            boolean result = copyFile(fOverview[i], new File(getSyncImageDir(ctx), getSyncImageName(generateUUID(), barCode, barType, ProductImageTypes.OVERVIEW)));
-            if (result == false) {
-                return false;
+    public static boolean productImageExists(Context ctx, String barCode, String barType, final String imgName) {
+        File productDir = getProductImageDir(ctx, barCode, barType, ImgSize.LARGE);
+        File[] files = productDir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.getName().contains(imgName);
             }
-        }
-        for (int i = 0; i<fIngredients.length; i++) {
-            boolean result = copyFile(fIngredients[i], new File(getSyncImageDir(ctx), getSyncImageName(generateUUID(), barCode, barType, ProductImageTypes.INGREDIENTS)));
-            if (result == false) {
-                return false;
-            }
-        }
-        return true;
+        });
+        return files != null && files.length > 0;
     }
-    public static boolean copyTempVoicesToSync(Context ctx, String barCode, String barType) {
-        File[] files = getProductVoiceTempFiles(ctx,barCode, barType);
-        for (int i = 0; i<files.length; i++) {
-            boolean result = copyFile(files[i], new File(getSyncVoiceDir(ctx), getSyncVoiceName(barCode, barType, generateUUID())));
-            if (result == false) {
-                return false;
+    public static boolean voiceNoteExists(Context ctx, String barCode, String barType, final String voiceNoteName) {
+        File productDir = getProductVoicesDir(ctx, barCode, barType);
+        File[] files = productDir.listFiles(new FileFilter() {
+            @Override
+            public boolean accept(File file) {
+                return file.getName().contains(voiceNoteName);
             }
-        }
-        return true;
-
+        });
+        return files != null && files.length > 0;
     }
-    public static File[] moveTempVoiceNotesToProductDir(Context ctx, String barCode, String barType) {
+
+
+
+
+
+    public static void copyProductVoiceNoteToSync(Context ctx, String barCode, String barType, File recordedFile) {
+        String uniqueId = recordedFile.getName().replace(AUDIO_EXT, "");
+        copyFile(recordedFile, new File(getSyncVoiceDir(ctx), getSyncVoiceName(barCode, barType, uniqueId)));
+    }
+
+
+    public static File[] moveTempVoiceNotes(Context ctx, String barCode, String barType) {
         File[] files = getProductVoiceTempFiles(ctx,barCode, barType);
         File voicesDir = getProductVoicesDir(ctx, barCode, barType);
         if (voicesDir.exists() == false) {
@@ -250,7 +289,11 @@ public class FileHelpers {
         }
         List<File> movedFiles = new ArrayList<File>();
         for (File file : files) {
-            boolean result = moveFile(file, new File(voicesDir, getProductVoiceName(generateUUID())));
+            String uniqueId = generateUUID();
+            // copy to sync dir
+            copyFile(file, new File(getSyncVoiceDir(ctx), getSyncVoiceName(barCode, barType, uniqueId)));
+            // move to product dir
+            boolean result = moveFile(file, new File(voicesDir, getProductVoiceName(uniqueId)));
             if (result == false) {
                 return listToArray(movedFiles);
             }
@@ -262,38 +305,79 @@ public class FileHelpers {
     private static File[] listToArray(List<File> list) {
         return list.toArray(new File[list.size()]);
     }
-    public static File[] createProductImagesFromTempImages(Context ctx, String barCode, String barType) {
-        File[] fOverview = getProductImageTempFiles(ctx, ProductImageTypes.OVERVIEW, barCode, barType);
-        File[] fIngredients = getProductImageTempFiles(ctx, ProductImageTypes.INGREDIENTS, barCode, barType);
+    public static File[] moveTempImages(Context ctx, String barCode, String barType) {
+        File[] fImages = getProductImageTempFiles(ctx, barCode, barType);
         List<File> movedFiles = new ArrayList<File>();
-        for (File f : fOverview) {
-            if (createProductImagesFromTempImage(ctx, ProductImageTypes.OVERVIEW, barCode, barType, f, generateUUID()) == false) {
+        for (File f : fImages) {
+            String uniqueId = generateUUID();
+            // copy to sync dir
+            copyFile(f, new File(getSyncImageDir(ctx), getSyncImageName(uniqueId, barCode, barType)));
+            // move to product dir
+            if (createProductImagesFromTempImage(ctx, barCode, barType, f, uniqueId) == false) {
                 return listToArray(movedFiles);
             }
             movedFiles.add(f);
         }
-        for (File f : fIngredients) {
-            if (createProductImagesFromTempImage(ctx, ProductImageTypes.INGREDIENTS, barCode, barType, f, generateUUID()) == false) {
-                return listToArray(movedFiles);
-            }
-            movedFiles.add(f);
-        }
+
         return listToArray(movedFiles);
     }
 
-    private static boolean createProductImagesFromTempImage(Context ctx, String imageType, String barCode, String barType, File source, String imgIndex ) {
-        resizeAndCopyImage(ctx, source, ImgSize.LARGE, imageType, barCode, barType, imgIndex);
-        resizeAndCopyImage(ctx, source, ImgSize.SMALL, imageType, barCode, barType, imgIndex);
+    private static boolean createProductImagesFromTempImage(Context ctx, String barCode, String barType, File source, String imgIndex ) {
+        String imageName = getProductImageName(imgIndex);
+        resizeAndCopyImage(ctx, source, ImgSize.LARGE, imageName, barCode, barType);
+        resizeAndCopyImage(ctx, source, ImgSize.SMALL, imageName, barCode, barType);
         return deleteFile(source);
 
     }
 
-    private static void resizeAndCopyImage(Context ctx, File source, ImgSize imgSize, String imageType, String barCode, String barType, String imgIndex) {
+
+
+    public static void createVoiceNoteFromStream(Context ctx, InputStream inputStream, String voiceNoteName, String barCode, String barType) {
+        File voiceNotesDir = getProductVoicesDir(ctx, barCode, barType);
+        if (voiceNotesDir.exists() == false) {
+            voiceNotesDir.mkdirs();
+        }
+        File target = new File(voiceNotesDir, getProductVoiceName(voiceNoteName));
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(target);
+            ByteStreams.copy(inputStream, outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try{
+                outputStream.close();
+            } catch(Throwable ignore) {}
+        }
+    }
+
+    public static void createProductImageFromStream(Context ctx, InputStream inputStream, String imageName, ImgSize imgSize, String barCode, String barType) {
         File productImageDir = getProductImageDir(ctx, barCode, barType, imgSize);
         if (productImageDir.exists() == false) {
             productImageDir.mkdirs();
         }
-        File target = new File(productImageDir, getProductImageName(imgIndex, imageType));
+        File target = new File(productImageDir, getProductImageName(imageName));
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(target);
+            ByteStreams.copy(inputStream, outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try{
+                outputStream.close();
+            } catch(Throwable ignore) {}
+        }
+    }
+
+
+
+    private static void resizeAndCopyImage(Context ctx, File source, ImgSize imgSize, String imageName, String barCode, String barType) {
+        File productImageDir = getProductImageDir(ctx, barCode, barType, imgSize);
+        if (productImageDir.exists() == false) {
+            productImageDir.mkdirs();
+        }
+        File target = new File(productImageDir,imageName);
         Point p = ImageResizer.getImageSize(ctx, imgSize);
         Bitmap bitmap = ImageResizer.decodeSampledBitmapFromFile(source.getAbsolutePath(), p.x, p.y, null);
         FileOutputStream out = null;

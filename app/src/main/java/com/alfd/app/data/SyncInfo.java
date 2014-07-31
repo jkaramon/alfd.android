@@ -7,6 +7,8 @@ import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.ReadableDuration;
 
 /**
  * Created by karamon on 15. 7. 2014.
@@ -14,6 +16,9 @@ import org.joda.time.DateTime;
 
 @Table(name = "SyncInfo")
 public class SyncInfo extends BaseModel {
+
+
+
     public static class SyncStates {
         public static String NOT_STARTED = "not_started";
         public static String IN_PROGRESS = "in_progress";
@@ -35,9 +40,22 @@ public class SyncInfo extends BaseModel {
 
 
 
-    public boolean initialSyncNeeded() {
+    public boolean initialSyncAllowed() {
         return this.InitialSyncState == SyncStates.NOT_STARTED || this.InitialSyncState == SyncStates.FAILED;
     }
+
+    public boolean initialSyncDisabled() {
+        return !initialSyncAllowed();
+    }
+    public boolean syncAllowed(boolean enforce) {
+        Duration lastSyncDiff = new Duration(LastSyncDate == null ? DateTime.now().minusYears(1) : LastSyncDate, DateTime.now());
+        return SyncState != SyncStates.IN_PROGRESS && (enforce || lastSyncDiff.getStandardMinutes() > 5);
+    }
+
+    public boolean syncDisabled(boolean enforce) {
+        return !syncAllowed(enforce);
+    }
+
 
     public void setInitialSyncStarted() {
         this.InitialSyncState = SyncStates.IN_PROGRESS;
@@ -54,11 +72,30 @@ public class SyncInfo extends BaseModel {
         this.saveWithCallbacks();
     }
 
+    public void setSyncDone() {
+        this.SyncState = SyncStates.SUCCESS;
+        this.saveWithCallbacks();
+    }
+
+    public void setSyncFailed() {
+        this.SyncState = SyncStates.FAILED;
+        this.saveWithCallbacks();
+    }
+    public void setSyncStarted() {
+        this.SyncState = SyncStates.IN_PROGRESS;
+        this.saveWithCallbacks();
+    }
+
 
     public static SyncInfo get() {
-        return new Select()
+        SyncInfo si =  new Select()
                 .from(SyncInfo.class)
                 .executeSingle();
+        if (si == null) {
+            si = new SyncInfo();
+            si.saveWithCallbacks();
+        }
+        return si;
     }
 
     public static void set() {

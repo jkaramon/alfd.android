@@ -3,22 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.alfd.app.activities.fragments.ProductInfoFragment"
-    android:orientation="vertical">
+    android:orientation="horizontal"
+    android:baselineAligned="false">
 
 
-
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="right">
+    <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:layout_weight="6">
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="6">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:layout_width="120dp"
@@ -48,30 +46,24 @@
                 android:text="description" />
 
         </LinearLayout>
+    </ScrollView>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:id="@+id/sensitivity_layout">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView"
-                android:src="@drawable/empty_photo"
-                android:layout_margin="@dimen/margin_small"
-                android:layout_gravity="right" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView2"
-                android:src="@drawable/empty_photo"
-                android:layout_gravity="right"
-                android:layout_margin="@dimen/margin_small" />
-        </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="110dp"
+        android:layout_height="match_parent"
+        android:id="@+id/sensitivity_layout"
+        android:layout_weight="1">
+        <it.gmariotti.cardslib.library.view.CardListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnWidth="40dp"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="3dp"
+            android:horizontalSpacing="2dp"
+            android:stretchMode="columnWidth"
+            android:gravity="center"
+            android:id="@+id/user_sensitivity_list" />
 
     </LinearLayout>
 

@@ -25,6 +25,8 @@ import com.alfd.app.activities.MainActivity;
 import com.alfd.app.activities.NewProductActivity;
 
 import java.text.Normalizer;
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Class containing some static utility methods.
@@ -92,5 +94,33 @@ public class Utils {
         }
         String normalized = Normalizer.normalize(val, Normalizer.Form.NFKC);
         return normalized.toLowerCase();
+    }
+    private static HashMap<Character, Character> tranliterateMap;
+
+    private static char lookupTransliteratedChar(char c) {
+        if (tranliterateMap == null) {
+            initTransliterateMap();
+        }
+        if (tranliterateMap.containsKey(c)) {
+            return tranliterateMap.get(c);
+        }
+        return c;
+    }
+
+    private static void initTransliterateMap() {
+        tranliterateMap = new HashMap<Character, Character>();
+    }
+
+    public static String belrusToEngTranlit (String text){
+        char[] abcCyr = {'a','б','в','г','д','ё','ж','з','и','к','л','м','н','п','р','с','т','у','ў','ф','х','ц','ш','щ','ы','э','ю','я'};
+        String[] abcLat = {"a","b","v","g","d","jo","zh","z","i","k","l","m","n","p","r","s","t","u","w","f","h","ts","sh","sch","","e","ju","ja"};
+
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            builder.append(lookupTransliteratedChar(c));
+        }
+        return builder.toString();
     }
 }

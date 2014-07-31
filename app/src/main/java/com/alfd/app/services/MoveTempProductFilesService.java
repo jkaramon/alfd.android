@@ -36,7 +36,9 @@ public class MoveTempProductFilesService extends BaseIntentService {
 
     public void execute() {
 
-         result = product.moveTempFiles(this);
+        result = product.moveTempFiles(this);
+        Intent assetsSyncServiceIntent = ProductAssetsSyncService.createStartIntent(this, product.BarCode, product.BarType);
+        startService(assetsSyncServiceIntent);
     }
 
 

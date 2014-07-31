@@ -46,38 +46,14 @@ public class InitialSyncService extends BaseIntentService {
 
     @Override
     protected void preExecute(Intent workIntent) {
-       
+       SyncInfo.get().setInitialSyncStarted();
     }
 
     public void execute() {
-        syncFamilyUsers();
-        syncProducts();
+
     }
 
 
-    private void syncProducts() {
-        PagedResult<Product> products = productSvc.getProducts();
-        for (Product p : products.items) {
-            com.alfd.app.data.Product sqlProduct = com.alfd.app.data.Product.getByBarCode(p.barCode);
-            if (sqlProduct == null) {
-                sqlProduct = com.alfd.app.data.Product.fromREST(p);
-            }
-            sqlProduct.sync(p);
-
-        }
-    }
-
-    private void syncFamilyUsers() {
-        PagedResult<User> users = usersSvc.myFamilyUsers();
-        for (User u : users.items) {
-            String login = u.google.email;
-            com.alfd.app.data.User sqlUser = com.alfd.app.data.User.getByGoogleAccountName(login);
-            if (sqlUser == null) {
-                sqlUser = com.alfd.app.data.User.fromREST(u);
-            }
-            sqlUser.sync(u);
-        }
-    }
 
 
     protected void onFailure(Exception e) {
@@ -99,8 +75,7 @@ public class InitialSyncService extends BaseIntentService {
     }
 
     private SyncInfo getSyncInfo() {
-        SyncInfo si = new SyncInfo();
-        si.LastSyncDate = DateTime.now();
+        SyncInfo si = SyncInfo.get();
         si.LastInitialSyncDate = DateTime.now();
         return si;
 

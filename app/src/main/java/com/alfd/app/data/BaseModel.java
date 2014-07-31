@@ -22,6 +22,7 @@ public abstract class BaseModel extends Model {
 
 
 
+
     protected void afterSave() {
     }
 
