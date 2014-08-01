@@ -2,10 +2,8 @@
 <resources>
 
     <string name="action_search_product">Search product</string>
-    <string name="app_name">ALFD.android</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="app_name">FamVivo - Foods</string>
+    <string name="app_name_multiline">FamVivo\nFoods</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Example action</string>
@@ -31,5 +29,8 @@
     <string name="menu_set_sensitivity">Set Sensitivity</string>
     <string name="optional_short_note">Add short note (optional)</string>
     <string name="title_activity_set_sensitivity">SetSensitivityActivity</string>
+    <string name="app_description">Manages allergy sensititivity\nto food products.</string>
+    <string name="signout">Sign out</string>
+    <string name="revoke">Revoke</string>
 
 </resources>

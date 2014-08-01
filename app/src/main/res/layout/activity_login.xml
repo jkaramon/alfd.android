@@ -3,73 +3,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity"
+    android:background="@drawable/home_bg"
+    android:baselineAligned="false">
 
     <LinearLayout
-        android:id="@+id/llProfile"
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal"
-        android:weightSum="3"
-        android:visibility="gone">
+        android:layout_weight="3"
+        android:layout_marginTop="@dimen/margin_large">
 
-        <ImageView
-            android:id="@+id/imgProfilePic"
-            android:layout_width="80dp"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:text="@string/app_name_multiline"
+            android:id="@+id/textView"
+            style="@style/hero_text" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/app_description"
+            android:id="@+id/subtitle"
+            style="@style/hero_subtitle_text"
+            android:layout_marginTop="@dimen/margin_large" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
             android:orientation="vertical"
-            android:layout_weight="2" >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/login_progress"
+            android:focusableInTouchMode="false">
 
-            <TextView
-                android:id="@+id/txtName"
-                android:layout_width="fill_parent"
+            <ProgressBar
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textSize="20dp" />
+                android:id="@+id/progressBar"
+                android:indeterminate="true" />
 
-            <TextView
-                android:id="@+id/txtAccessToken"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/txtEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:textSize="18dp" />
         </LinearLayout>
+
     </LinearLayout>
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/btn_sign_in"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"/>
+        android:layout_weight="1"
+        android:gravity="bottom"
+        android:measureWithLargestChild="false">
 
-    <Button
-        android:id="@+id/btn_sign_out"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Sign out"
-        android:visibility="gone"
-        android:layout_marginBottom="10dp"/>
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/btn_sign_in"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_revoke_access"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Revoke"
-        android:visibility="gone" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -28,7 +28,7 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/tvw_bar_code"
             android:layout_gravity="center_horizontal"
-            style="@style/hero_text_highlighted" />
+            style="@style/hero_text" />
 
         <TextView
             android:layout_width="wrap_content"

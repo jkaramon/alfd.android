@@ -53,19 +53,32 @@
 
     <style name="button_primary"></style>
 
-    <style name="hero_text">
-        <item name="android:textSize">@dimen/text_xlarge</item>
-        <item name="android:padding">10dp</item>
-    </style>
-
     <style name="header_text">
         <item name="android:textSize">@dimen/text_xlarge</item>
-        <item name="android:layout_margin">@dimen/margin_large</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:gravity">center_horizontal</item>
     </style>
 
-    <style name="hero_text_highlighted" parent="hero_text">
-        <item name="android:textStyle">bold</item>
+    <style name="subtitle_text">
+        <item name="android:textSize">@dimen/text_small</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
     </style>
+
+    <style name="hero_text" parent="header_text">
+        <item name="android:textSize">@dimen/text_xxlarge</item>
+        <item name="android:textColor">@color/primary</item>
+    </style>
+
+    <style name="hero_subtitle_text">
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/gray_darker</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+    </style>
+
+
+
 
     <style name="header_placeholder_text">
         <item name="android:padding">5dp</item>

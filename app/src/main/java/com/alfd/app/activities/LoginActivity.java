@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,12 +68,11 @@ public class LoginActivity extends Activity implements GoogleApiClient.Connectio
     private boolean signInClicked;
 
     private SignInButton btnSignIn;
-    private Button btnSignOut;
-    private ImageView imgProfilePic;
-    private TextView txtName, txtEmail, txtAccessToken;
-    private LinearLayout llProfileLayout;
 
     private String accessToken;
+    private TextView subtitle;
+    private ViewGroup progressBarLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,16 +86,12 @@ public class LoginActivity extends Activity implements GoogleApiClient.Connectio
                 .build();
 
         btnSignIn = (SignInButton) findViewById(R.id.btn_sign_in);
-        btnSignOut = (Button) findViewById(R.id.btn_sign_out);
-        imgProfilePic = (ImageView) findViewById(R.id.imgProfilePic);
-        txtName = (TextView) findViewById(R.id.txtName);
-        txtEmail = (TextView) findViewById(R.id.txtEmail);
-        txtAccessToken = (TextView) findViewById(R.id.txtAccessToken);
-        llProfileLayout = (LinearLayout) findViewById(R.id.llProfile);
-
+        btnSignIn.setSize(SignInButton.SIZE_WIDE);
+        subtitle = (TextView)findViewById(R.id.subtitle);
+        progressBarLayout = (ViewGroup)findViewById(R.id.login_progress);
+        hideLoginProgress();
         // Button click listeners
         btnSignIn.setOnClickListener(this);
-        btnSignOut.setOnClickListener(this);
     }
 
 
@@ -144,6 +140,16 @@ public class LoginActivity extends Activity implements GoogleApiClient.Connectio
 
     }
 
+
+    private void showLoginProgress() {
+        progressBarLayout.setVisibility(View.VISIBLE);
+        subtitle.setVisibility(View.GONE);
+    }
+    private void hideLoginProgress() {
+        progressBarLayout.setVisibility(View.GONE);
+        subtitle.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onConnected(Bundle bundle) {
         signInClicked = false;
@@ -162,6 +168,8 @@ public class LoginActivity extends Activity implements GoogleApiClient.Connectio
             }
         }
     }
+
+
 
     /**
      * Method to resolve any signin errors
@@ -186,12 +194,11 @@ public class LoginActivity extends Activity implements GoogleApiClient.Connectio
     private void updateUI(boolean isSignedIn) {
         if (isSignedIn) {
             btnSignIn.setVisibility(View.GONE);
-            btnSignOut.setVisibility(View.VISIBLE);
-            llProfileLayout.setVisibility(View.VISIBLE);
+            showLoginProgress();
+
         } else {
             btnSignIn.setVisibility(View.VISIBLE);
-            btnSignOut.setVisibility(View.GONE);
-            llProfileLayout.setVisibility(View.GONE);
+            hideLoginProgress();
         }
     }
 
@@ -202,11 +209,6 @@ public class LoginActivity extends Activity implements GoogleApiClient.Connectio
                 // Signin button clicked
                 signInWithGplus();
                 updateUI(true);
-                break;
-            case R.id.btn_sign_out:
-                // Signout button clicked
-                signOutFromGplus();
-                updateUI(false);
                 break;
 
         }
@@ -243,8 +245,11 @@ public class LoginActivity extends Activity implements GoogleApiClient.Connectio
     }
 
 
-
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResultAndFinish(RESULT_CANCELED);
+    }
 
     /**
      * Sign-out from google
