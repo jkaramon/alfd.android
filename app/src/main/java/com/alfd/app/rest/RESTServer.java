@@ -33,7 +33,7 @@ import retrofit.converter.GsonConverter;
 
 public class RESTServer extends RetrofitSpiceService {
 
-    private final static String BASE_URL = "http://192.168.14.6:3000/api";
+
 
 
 
@@ -70,7 +70,7 @@ public class RESTServer extends RetrofitSpiceService {
 
     @Override
     protected String getServerUrl() {
-        return BASE_URL;
+        return Settings.getServerUrl();
     }
 
 

@@ -85,7 +85,7 @@ public class Utils {
     }
 
     public static boolean isBlank(String val) {
-        return val == null || val.trim() == "";
+        return val == null || val.trim().isEmpty();
     }
 
     public static String transliterate(String val) {

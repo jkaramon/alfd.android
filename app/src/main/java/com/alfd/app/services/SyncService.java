@@ -2,7 +2,9 @@ package com.alfd.app.services;
 
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
+import com.alfd.app.LogTags;
 import com.alfd.app.Services;
 import com.alfd.app.data.Family;
 import com.alfd.app.data.Sensitivity;
@@ -35,6 +37,8 @@ public class SyncService extends BaseIntentService {
     private UserEndpoints usersSvc;
     private RestAdapter restAdapter;
     private DateTime lastSyncDate;
+    private DateTime syncStarServertDate;
+
 
     public SyncService() {
 
@@ -86,6 +90,7 @@ public class SyncService extends BaseIntentService {
 
     private void downloadSensitivities() {
         PagedResult<com.alfd.app.rest.Sensitivity> sensitivities = sensitivitySvc.getSensitivities(lastSyncDate);
+
         for (com.alfd.app.rest.Sensitivity restSensitivity : sensitivities.items) {
             Sensitivity sqlSensitivity = Sensitivity.getByServerId(Sensitivity.class, restSensitivity.id);
             if (sqlSensitivity == null) {
@@ -121,6 +126,7 @@ public class SyncService extends BaseIntentService {
 
     private void downloadProducts() {
         PagedResult<Product> products = productSvc.getProducts(lastSyncDate);
+        syncStarServertDate = products.serverDate;
         for (Product p : products.items) {
             com.alfd.app.data.Product sqlProduct = com.alfd.app.data.Product.getByBarCode(p.barCode);
             if (sqlProduct == null) {
@@ -136,13 +142,24 @@ public class SyncService extends BaseIntentService {
     private void downloadFamilyUsers() {
         PagedResult<User> users = usersSvc.myFamilyUsers();
         for (User u : users.items) {
+            Family family = Family.getByServerId(Family.class, u.familyId);
             String serverId = u.id;
             com.alfd.app.data.User sqlUser = com.alfd.app.data.User.getByServerId(com.alfd.app.data.User.class, serverId);
             if (sqlUser == null) {
                 sqlUser = com.alfd.app.data.User.fromREST(u);
-                sqlUser.FamilyId = Family.getByServerId(Family.class, u.familyId).getId();
+                if (family != null) {
+                    sqlUser.FamilyId = family.getId();
+                }
             }
-            sqlUser.sync(u);
+            if (sqlUser.FamilyId > 0) {
+                sqlUser.sync(u);
+            }
+            else {
+                Log.w(LogTags.SYNC,String.format("Cannot sync user %s. Invalid family id provided - %s", sqlUser.DisplayName, u.familyId));
+            }
+
+
+
         }
     }
 
@@ -173,6 +190,7 @@ public class SyncService extends BaseIntentService {
     protected void onSuccess() {
         Intent localIntent = createIntent(Services.STATUS_SUCCESS);
         SyncInfo si = getSyncInfo();
+        si.LastSyncDate = syncStarServertDate != null ? syncStarServertDate : DateTime.now();
         si.setSyncDone();
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);
 
@@ -180,7 +198,6 @@ public class SyncService extends BaseIntentService {
 
     private SyncInfo getSyncInfo() {
         SyncInfo si = SyncInfo.get();
-        si.LastSyncDate = DateTime.now();
         return si;
 
     }

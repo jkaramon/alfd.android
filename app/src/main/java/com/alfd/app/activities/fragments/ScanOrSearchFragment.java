@@ -92,11 +92,12 @@ public class ScanOrSearchFragment extends Fragment {
                 String text = editable.toString();
                 if (Utils.isBlank(text)) {
                     scanButton.setVisibility(View.VISIBLE);
+                    Cursor c = Cache.openDatabase().rawQuery("SELECT Id _id, * FROM products WHERE 1=0", null);
+                    adapter.swapCursor(c);
                     return;
                 }
                 scanButton.setVisibility(View.GONE);
-                Toast.makeText(ScanOrSearchFragment.this.getActivity(), text, Toast.LENGTH_LONG).show();
-                loadCards();
+                loadCards(text);
             }
         });
 
@@ -105,8 +106,12 @@ public class ScanOrSearchFragment extends Fragment {
         return rootView;
     }
 
-    private void loadCards() {
-        Cursor c = Cache.openDatabase().rawQuery("SELECT Id _id, * FROM products", null);
+    private void loadCards(String searchText) {
+        String sql = "SELECT Id _id, * FROM products WHERE SearchName LIKE '%' || ? || '%' ORDER BY Name";
+        String[] args = new String[] {
+                searchText
+        };
+        Cursor c = Cache.openDatabase().rawQuery(sql, args);
         adapter.swapCursor(c);
 
     }

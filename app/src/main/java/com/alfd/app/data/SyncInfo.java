@@ -98,15 +98,7 @@ public class SyncInfo extends BaseModel {
         return si;
     }
 
-    public static void set() {
-        SyncInfo si = get();
-        if (si == null) {
-            si = new SyncInfo();
-        }
-        si.LastSyncDate = DateTime.now();
-        si.saveWithCallbacks();
 
-    }
 
 
 }

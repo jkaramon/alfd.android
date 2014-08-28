@@ -9,4 +9,5 @@ public class LogTags {
     public static final String FILE_STORAGE = "file_storage";
     public static final String SQL = "SQL";
     public static final String DBG = "DBG";
+    public static final String SYNC = "SYNC";
 }

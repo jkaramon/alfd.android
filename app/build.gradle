@@ -39,7 +39,7 @@ android {
         exclude 'META-INF/ASL2.0'
     }
     defaultConfig {
-        minSdkVersion 17
+        minSdkVersion 15
         targetSdkVersion 19
         versionCode 1
         versionName "1.0"

@@ -32,5 +32,7 @@
     <string name="app_description">Manages allergy sensititivity\nto food products.</string>
     <string name="signout">Sign out</string>
     <string name="revoke">Revoke</string>
+    <string name="search_for_product_hint">Search for product</string>
+    <string name="product_image_title">product image</string>
 
 </resources>

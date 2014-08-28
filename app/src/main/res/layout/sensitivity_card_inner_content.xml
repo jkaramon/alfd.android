@@ -20,7 +20,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="96dp"
+    android:layout_width="48dp"
     android:layout_marginLeft="3dp"
     android:gravity="center_vertical"
     android:layout_height="64dp"
@@ -29,15 +29,16 @@
     android:textAlignment="center">
 
     <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:id="@+id/avatar"
         android:src="@drawable/male1"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentEnd="true" />
 
     <ImageView
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:id="@+id/level"
         android:longClickable="true"
         android:src="@drawable/s_unknown"
@@ -56,9 +57,10 @@
         android:id="@+id/display_name"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:background="#99ffffff"
-        android:autoText="true" />
+        android:autoText="true"
+        android:singleLine="true" />
 
 
 </RelativeLayout>

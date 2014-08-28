@@ -1,5 +1,7 @@
 package com.alfd.app.rest;
 
+import org.joda.time.DateTime;
+
 import java.util.List;
 
 /**
@@ -8,4 +10,5 @@ import java.util.List;
 public class PagedResult<T> {
     public List<T> items;
 
+    public DateTime serverDate;
 }

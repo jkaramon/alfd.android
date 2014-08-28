@@ -5,6 +5,7 @@ package com.alfd.app.rest;
  */
 public class Product extends BaseRESTModel {
     public String name;
+    public String searchName;
     public String description;
     public String barCode;
     public String barType;

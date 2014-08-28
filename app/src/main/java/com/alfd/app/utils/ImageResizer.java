@@ -154,9 +154,9 @@ public class ImageResizer extends ImageWorker {
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
 
 //        // If we're running on Honeycomb or newer, try to use inBitmap
-//        if (Utils.hasHoneycomb() && cache != null) {
-//            addInBitmapOptions(options, cache);
-//        }
+        if (Utils.hasHoneycomb() && cache != null) {
+            addInBitmapOptions(options, cache);
+        }
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
@@ -241,11 +241,13 @@ public class ImageResizer extends ImageWorker {
     public static Point getImageSize(Context ctx, ImgSize size) {
         switch (size) {
             case THUMB:
-                return new Point(120, 160);
+                return new Point(100, 100);
             case SMALL:
-                return new Point(200, 320);
+                return new Point(200, 200);
+            case MEDIUM:
+                return new Point(800, 800);
             default:
-                return new Point(1024, 768);
+                return new Point(1600, 1600);
         }
     }
 }

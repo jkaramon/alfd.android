@@ -104,17 +104,10 @@ public class FileHelpers {
     }
 
     public static File[] getProductImageFiles(Context ctx, String barCode, String barType) {
-        ImgSize[] sizes = new ImgSize[2];
-        sizes[0] = ImgSize.LARGE;
-        sizes[1] = ImgSize.SMALL;
 
-        File dir = null;
-        for (ImgSize size : sizes) {
-            dir = getProductImageDir(ctx, barCode, barType, size);
-            if (dir.exists()) {
-                break;
-            }
-        }
+
+        File dir = getProductImageDir(ctx, barCode, barType, ImgSize.SMALL);
+
         FilenameFilter filter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return true;

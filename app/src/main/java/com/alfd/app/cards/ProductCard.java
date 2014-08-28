@@ -24,11 +24,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.alfd.app.ImgSize;
 import com.alfd.app.R;
+import com.alfd.app.data.Product;
 import com.alfd.app.intents.IntentFactory;
+import com.alfd.app.utils.ImageResizer;
 
 import it.gmariotti.cardslib.library.internal.Card;
 
@@ -44,8 +48,10 @@ public class ProductCard extends Card {
     protected TextView txtDescription;
     private String name;
     private String barCode;
+    private String barType;
     private String description;
-
+    private ImageView ivwProductImage;
+    private ImageResizer imageWorker;
 
     public ProductCard(Activity activity) {
         this(activity, R.layout.product_card_inner_content);
@@ -67,14 +73,15 @@ public class ProductCard extends Card {
         super.setupInnerViewElements(parent, view);
         txtBarCode = (TextView) view.findViewById(R.id.product_card_inner_bar_code);
         txtDescription = (TextView) view.findViewById(R.id.product_card_inner_description);
-
-
+        ivwProductImage = (ImageView)view.findViewById(R.id.product_image);
+        imageWorker = new ImageResizer(activity, ImgSize.SMALL);
 
         if (description != null) {
             txtDescription.setText(barCode);
         }
         if (barCode != null) {
             txtBarCode.setText(description);
+            imageWorker.loadImage(Product.getPrimaryPhoto(activity, barCode, barType), ivwProductImage);
         }
         setOnClickListener(new OnCardClickListener() {
             @Override
@@ -85,6 +92,7 @@ public class ProductCard extends Card {
             }
         });
 
+
     }
 
     public long getIdLong() {
@@ -94,7 +102,10 @@ public class ProductCard extends Card {
     public void setFromCursor(Cursor cursor) {
         name = cursor.getString(cursor.getColumnIndex(Columns.NAME));
         barCode = cursor.getString(cursor.getColumnIndex(Columns.BAR_CODE));
+        barType = cursor.getString(cursor.getColumnIndex(Columns.BAR_TYPE));
         description = cursor.getString(cursor.getColumnIndex(Columns.DESCRIPTION));
+
+
 
         this.setId("" + cursor.getInt(cursor.getColumnIndex(Columns.ID)));
 
@@ -115,6 +126,7 @@ public class ProductCard extends Card {
         public static String ID = "Id";
         public static String NAME = "Name";
         public static String BAR_CODE = "BarCode";
+        public static String BAR_TYPE = "BarType";
         public static String DESCRIPTION = "Description";
     }
 }

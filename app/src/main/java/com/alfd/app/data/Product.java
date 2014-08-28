@@ -93,14 +93,16 @@ public class Product extends BaseServerModel {
         }
     }
 
-
-
-    public File getPrimaryPhoto(Context ctx) {
-        File[] files = FileHelpers.getProductImageFiles(ctx, BarCode, BarType);
+    public static File getPrimaryPhoto(Context ctx, String barCode, String barType) {
+        File[] files = FileHelpers.getProductImageFiles(ctx, barCode, barType);
         if (files.length > 0) {
             return files[0];
         }
         return null;
+    }
+
+    public File getPrimaryPhoto(Context ctx) {
+        return getPrimaryPhoto(ctx, BarCode, BarType);
     }
 
     public File[] getVoiceNotes(Context ctx) {
@@ -151,6 +153,7 @@ public class Product extends BaseServerModel {
         this.BarCode = restProduct.barCode;
         this.BarType = restProduct.barType;
         this.Name = restProduct.name;
+        this.SearchName = restProduct.searchName;
         this.Description = restProduct.description;
     }
 

@@ -267,7 +267,7 @@ public class LoginActivity extends Activity implements GoogleApiClient.Connectio
             @Override
             protected String doInBackground(Void... params) {
                 accessToken = null;
-                String scope = "audience:server:client_id:215330885955-3r9oh088v2t3nqd8ii8s6r88rss8ckja.apps.googleusercontent.com";
+                String scope = "audience:server:client_id:" + Settings.getGoogleClientId();
                 try {
                     return GoogleAuthUtil.getToken(LoginActivity.this, Plus.AccountApi.getAccountName(googleApiClient), scope);
 
