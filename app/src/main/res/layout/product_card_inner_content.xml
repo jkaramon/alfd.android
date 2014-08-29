@@ -20,52 +20,36 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_marginLeft="3dp"
-    android:gravity="center_vertical"
     android:layout_height="wrap_content">
-
-    <TextView
-        android:id="@+id/product_card_inner_name"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="product name"
-        android:singleLine="true" />
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal">
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_width="112dp"
+            android:layout_height="112dp"
             android:id="@+id/product_image"
             android:contentDescription="@string/product_image_title"
             android:focusableInTouchMode="false"
-            android:focusable="false" />
+            android:focusable="false"
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginBottom="@dimen/margin_tiny" />
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"></LinearLayout>
     </LinearLayout>
-
-    <TextView
-    android:id="@+id/product_card_inner_bar_code"
-
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-        android:text="bar code"
-        android:singleLine="true" />
 
     <TextView
         android:id="@+id/product_card_inner_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="description"
-        android:singleLine="true" />
+        android:singleLine="false"
+        android:lines="2"
+        android:ellipsize="end" />
 
 
 

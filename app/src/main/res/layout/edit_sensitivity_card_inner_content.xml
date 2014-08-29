@@ -20,7 +20,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="horizontal"
-    android:layout_height="96dp"
+    android:layout_height="70dp"
     android:padding="@dimen/margin_tiny">
 <RelativeLayout
     android:orientation="vertical"
@@ -33,8 +33,8 @@
     android:textAlignment="center">
 
     <ImageView
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:id="@+id/avatar"
         android:src="@drawable/male1"
         android:layout_centerHorizontal="true" />
@@ -60,9 +60,12 @@
         android:id="@+id/display_name"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:background="#99ffffff"
-        android:autoText="true" />
+        android:autoText="true"
+        android:singleLine="true"
+        android:lines="1"
+        android:ellipsize="end" />
 
 
 </RelativeLayout>
@@ -79,41 +82,45 @@
             android:layout_marginLeft="@dimen/margin_small">
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:id="@+id/btn_unknown"
                 android:src="@drawable/s_unknown"
                 android:focusableInTouchMode="true"
-                android:layout_margin="@dimen/margin_tiny"
-                android:clickable="true" />
+                android:clickable="true"
+                android:layout_marginBottom="0dp"
+                android:layout_marginRight="@dimen/margin_medium" />
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:id="@+id/btn_none"
                 android:src="@drawable/s_none"
                 android:focusableInTouchMode="true"
-                android:layout_margin="@dimen/margin_tiny"
-                android:clickable="true" />
+                android:clickable="true"
+                android:layout_marginBottom="0dp"
+                android:layout_marginRight="@dimen/margin_medium" />
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:id="@+id/btn_low"
                 android:src="@drawable/s_low"
                 android:focusableInTouchMode="true"
-                android:layout_margin="@dimen/margin_tiny"
-                android:clickable="true" />
+                android:clickable="true"
+                android:layout_marginBottom="0dp"
+                android:layout_marginRight="@dimen/margin_medium" />
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:id="@+id/btn_high"
                 android:src="@drawable/s_high"
                 android:focusableInTouchMode="true"
                 android:longClickable="true"
-                android:layout_margin="@dimen/margin_tiny"
-                android:clickable="true" />
+                android:clickable="true"
+                android:layout_marginBottom="0dp"
+                android:layout_marginRight="@dimen/margin_medium" />
         </LinearLayout>
 
         <LinearLayout
@@ -128,7 +135,8 @@
                 android:hint="@string/optional_short_note"
                 android:focusable="true"
                 android:linksClickable="false"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="13sp" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

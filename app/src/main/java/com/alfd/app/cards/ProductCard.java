@@ -44,7 +44,6 @@ import it.gmariotti.cardslib.library.internal.Card;
 public class ProductCard extends Card {
 
     private Activity activity;
-    protected TextView txtBarCode;
     protected TextView txtDescription;
     private String name;
     private String barCode;
@@ -56,6 +55,8 @@ public class ProductCard extends Card {
     public ProductCard(Activity activity) {
         this(activity, R.layout.product_card_inner_content);
         this.activity = activity;
+
+        this.setShadow(false);
     }
 
     /**
@@ -71,16 +72,14 @@ public class ProductCard extends Card {
     @Override
     public void setupInnerViewElements(ViewGroup parent, View view) {
         super.setupInnerViewElements(parent, view);
-        txtBarCode = (TextView) view.findViewById(R.id.product_card_inner_bar_code);
         txtDescription = (TextView) view.findViewById(R.id.product_card_inner_description);
         ivwProductImage = (ImageView)view.findViewById(R.id.product_image);
         imageWorker = new ImageResizer(activity, ImgSize.SMALL);
 
         if (description != null) {
-            txtDescription.setText(barCode);
+            txtDescription.setText(description);
         }
         if (barCode != null) {
-            txtBarCode.setText(description);
             imageWorker.loadImage(Product.getPrimaryPhoto(activity, barCode, barType), ivwProductImage);
         }
         setOnClickListener(new OnCardClickListener() {

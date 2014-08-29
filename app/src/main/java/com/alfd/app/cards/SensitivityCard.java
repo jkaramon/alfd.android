@@ -62,6 +62,7 @@ public class SensitivityCard extends Card {
         this.user = user;
         this.product = product;
         this.sensitivity = sensitivity;
+        this.setShadow(false);
     }
     public void setupInnerViewElements(ViewGroup parent, View view) {
         super.setupInnerViewElements(parent, view);

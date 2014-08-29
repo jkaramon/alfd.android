@@ -1,6 +1,8 @@
 <resources>
 
     <color name="primary">#829953</color>
+
+    <color name="primary_light_bg">#F6FFE5</color>
     <color name="primary_lighter">#ADCC6E</color>
     <color name="primary_light">#D9FF8A</color>
     <color name="primary_darker">#576637</color>

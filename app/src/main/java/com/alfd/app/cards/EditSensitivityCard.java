@@ -77,6 +77,8 @@ public class EditSensitivityCard extends Card {
         this.user = user;
         this.product = product;
         this.sensitivity = sensitivity;
+
+        this.setShadow(false);
         this.setId(user.getId().toString() + "_" + product.getId().toString());
     }
     public void setupInnerViewElements(ViewGroup parent, View view) {

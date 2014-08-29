@@ -96,6 +96,10 @@ public class SyncService extends BaseIntentService {
             if (sqlSensitivity == null) {
                 sqlSensitivity = Sensitivity.fromREST(restSensitivity);
             }
+            else {
+                sqlSensitivity.Level = restSensitivity.level;
+                sqlSensitivity.Note = restSensitivity.note;
+            }
             sqlSensitivity.sync(restSensitivity);
         }
     }
@@ -131,6 +135,11 @@ public class SyncService extends BaseIntentService {
             com.alfd.app.data.Product sqlProduct = com.alfd.app.data.Product.getByBarCode(p.barCode);
             if (sqlProduct == null) {
                 sqlProduct = com.alfd.app.data.Product.fromREST(p);
+            }
+            else {
+                sqlProduct.SearchName = p.searchName;
+                sqlProduct.Description = p.description;
+                sqlProduct.Name = p.name;
             }
             sqlProduct.sync(p);
             Intent assetsSyncServiceIntent = ProductAssetsSyncService.createStartIntent(this, p.barCode, p.barType);

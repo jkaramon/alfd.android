@@ -26,11 +26,12 @@ public class MainActivity extends BaseActionBarActivity
     private String barCode;
     private String barType;
     private String currentFragmentTag;
+    private ScanOrSearchFragment scanOrSearchFragment;
 
     public static class FTags {
         public static final String NON_EXISTING_PRODUCT = "non_existing_product";
         public static final String PRODUCT_DETAIL = "product_detail";
-        public static final String HOME = "home";
+        public static final String SCAN_OR_SEARCH = "scan_or_search";
 
     }
 
@@ -41,9 +42,14 @@ public class MainActivity extends BaseActionBarActivity
 
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putString(SC.CURRENT_FRAGMENT, currentFragmentTag);
+        savedInstanceState.putString(SC.CURRENT_FRAGMENT_TAG, currentFragmentTag);
         savedInstanceState.putString(SC.BAR_CODE, barCode);
         savedInstanceState.putString(SC.BAR_TYPE, barType);
+        if (scanOrSearchFragment != null) {
+            savedInstanceState.putString(SC.SEARCH_TEXT, scanOrSearchFragment.getSearchString());
+
+        }
+
 
     }
 
@@ -73,20 +79,20 @@ public class MainActivity extends BaseActionBarActivity
 
         if (savedInstanceState != null)
         {
-            currentFragmentTag =  savedInstanceState.getString(SC.CURRENT_FRAGMENT);
+            currentFragmentTag =  savedInstanceState.getString(SC.CURRENT_FRAGMENT_TAG);
             if (currentFragmentTag == FTags.NON_EXISTING_PRODUCT)
             {
                 barCode = savedInstanceState.getString(SC.BAR_CODE);
                 barType = savedInstanceState.getString(SC.BAR_TYPE);
                 renderNonExistingProductFragment();
 
-            } else if (currentFragmentTag == FTags.HOME) {
-                renderHomeFragment();
+            } else if (currentFragmentTag == FTags.SCAN_OR_SEARCH) {
+                renderScanOrSearchFragment(savedInstanceState.getString(SC.SEARCH_TEXT));
             }
 
         }
         else {
-            renderHomeFragment();
+            renderScanOrSearchFragment(null);
         }
     }
 
@@ -139,7 +145,7 @@ public class MainActivity extends BaseActionBarActivity
 
     }
 
-    private void renderHomeFragment()
+    private void renderScanOrSearchFragment(String searchText)
     {
         FragmentFactory factory = new FragmentFactory() {
             @Override
@@ -147,8 +153,9 @@ public class MainActivity extends BaseActionBarActivity
                 return ScanOrSearchFragment.newInstance();
             }
         };
-        currentFragmentTag = FTags.HOME;
-        FragmentUtils.change(this, currentFragmentTag, factory);
+        currentFragmentTag = FTags.SCAN_OR_SEARCH;
+        scanOrSearchFragment = (ScanOrSearchFragment)FragmentUtils.change(this, currentFragmentTag, factory);
+        scanOrSearchFragment.setSearchString(searchText);
     }
 
 

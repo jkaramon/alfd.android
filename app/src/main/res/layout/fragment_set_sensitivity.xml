@@ -14,6 +14,7 @@
         android:horizontalSpacing="2dp"
         android:stretchMode="columnWidth"
         android:gravity="center"
-        android:id="@+id/set_sensitivity_list" />
+        android:id="@+id/set_sensitivity_list"
+        android:dividerHeight="0dp" />
 
 </FrameLayout>

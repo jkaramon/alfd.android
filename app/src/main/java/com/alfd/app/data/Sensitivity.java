@@ -31,7 +31,7 @@ public class Sensitivity extends BaseServerModel {
     public String Note;
 
     @Column
-    public String Level;
+    public String Level = Levels.UNKNOWN;
 
 
 

@@ -2,10 +2,10 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true"
-        android:drawable="@color/primary"
+        android:drawable="@color/primary_light"
         /> <!-- pressed -->
     <item android:state_focused="true"
-        android:drawable="@color/primary_light"
+        android:drawable="@color/primary_lighter"
         /> <!-- focused -->
     <item android:drawable="@color/primary_lighter"/> <!-- default -->
 </selector>

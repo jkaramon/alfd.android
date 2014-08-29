@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Settings {
     private static String ACCESS_TOKEN = "accessToken";
-    private static String ENV = "dev";
+    private static String ENV = "staging";
 
     private static Map<String, String> staging = ImmutableMap.of(
             "googleClientId", "215330885955-343lvh1rirtn2ohap3ii1lpv0c3ssped.apps.googleusercontent.com",

@@ -15,7 +15,7 @@
     </style>
 
     <style name="large_text_view" parent="my_text_view">
-        <item name="android:textSize">22sp</item>
+        <item name="android:textSize">@dimen/text_large</item>
     </style>
 
     <style name="MyActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
@@ -26,6 +26,20 @@
     <style name="action_bar_title" parent="@android:style/TextAppearance.Holo.Widget.ActionBar.Title">
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="card.header_simple_title">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/text_normal</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+        <item name="android:layout_margin">@dimen/margin_medium</item>
+        <item name="android:layout_marginBottom">@dimen/margin_tiny</item>
+    </style>
+
 
     <style name="default_button">
         <item name="android:textColor">@color/button_text</item>
@@ -42,8 +56,8 @@
     </style>
 
     <style name="button_home_scan">
-        <item name="android:layout_width">144dp</item>
-        <item name="android:layout_height">96dp</item>
+        <item name="android:layout_width">128dp</item>
+        <item name="android:layout_height">64dp</item>
         <item name="android:layout_margin">@dimen/button_margin</item>
         <item name="android:padding">@dimen/button_padding</item>
         <item name="android:textSize">@dimen/text_large</item>

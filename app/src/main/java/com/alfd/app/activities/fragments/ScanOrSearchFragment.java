@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.activeandroid.Cache;
 import com.alfd.app.R;
 import com.alfd.app.RequestCodes;
+import com.alfd.app.SC;
 import com.alfd.app.activities.ScanActivity;
 import com.alfd.app.adapters.ProductListCardAdapter;
 import com.alfd.app.utils.Utils;
@@ -41,6 +42,9 @@ public class ScanOrSearchFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private ProductListCardAdapter adapter;
     private CardGridView productList;
+    private Button scanButton;
+    private EditText searchText;
+    private String initialSearchString;
 
     /**
      * Returns a new instance of this fragment for the given section
@@ -63,18 +67,22 @@ public class ScanOrSearchFragment extends Fragment {
             Bundle savedInstanceState) {
         adapter = new ProductListCardAdapter(this.getActivity());
 
+
+
         View rootView = inflater.inflate(R.layout.fragment_scan_or_search, container, false);
-        final Button scanButton = (Button)rootView.findViewById((R.id.scan_button));
-        EditText searchText = (EditText)rootView.findViewById(R.id.search_text);
+        scanButton = (Button)rootView.findViewById((R.id.scan_button));
+        searchText = (EditText)rootView.findViewById(R.id.search_text);
         final Activity activity = this.getActivity();
         productList = (CardGridView) rootView.findViewById(R.id.product_list);
         productList.setAdapter(adapter);
+
         scanButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(activity, ScanActivity.class);
                 activity.startActivityForResult(intent, RequestCodes.SCAN);
             }
         });
+
 
         searchText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -89,21 +97,31 @@ public class ScanOrSearchFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String text = editable.toString();
-                if (Utils.isBlank(text)) {
-                    scanButton.setVisibility(View.VISIBLE);
-                    Cursor c = Cache.openDatabase().rawQuery("SELECT Id _id, * FROM products WHERE 1=0", null);
-                    adapter.swapCursor(c);
-                    return;
-                }
-                scanButton.setVisibility(View.GONE);
-                loadCards(text);
+                doSearch();
             }
         });
 
-
-
+        searchText.setText(initialSearchString);
+        doSearch();
         return rootView;
+    }
+
+
+
+    public String getSearchString() {
+        return searchText.getText().toString();
+    }
+
+    private void doSearch() {
+        String search = getSearchString();
+        if (Utils.isBlank(search)) {
+            scanButton.setVisibility(View.VISIBLE);
+            Cursor c = Cache.openDatabase().rawQuery("SELECT Id _id, * FROM products WHERE 1=0", null);
+            adapter.swapCursor(c);
+            return;
+        }
+        scanButton.setVisibility(View.GONE);
+        loadCards(search);
     }
 
     private void loadCards(String searchText) {
@@ -117,4 +135,7 @@ public class ScanOrSearchFragment extends Fragment {
     }
 
 
+    public void setSearchString(String searchString) {
+        initialSearchString = searchString;
+    }
 }

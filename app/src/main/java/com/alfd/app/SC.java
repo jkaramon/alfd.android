@@ -10,7 +10,7 @@ public class SC {
     public static final String BAR_TYPE = "bar_type";
     public static final String IMAGE_TYPE = "image_type";
 
-    public static final String CURRENT_FRAGMENT = "current_fragment";
+    public static final String CURRENT_FRAGMENT_TAG = "current_fragment_tag";
 
     public static final String PRODUCT_PHOTO_ID = "product_photo_id";
     public static final String IMAGE_FULL_NAME = "image_full_name";
@@ -18,5 +18,6 @@ public class SC {
     public static final String EXCEPTION = "exception";
     public static final String IMAGES_MOVED = "images_moved";
     public static final String VOICE_NOTES_MOVED = "voice_notes_moved";
+    public static final java.lang.String SEARCH_TEXT = "search_text";
 }
 
